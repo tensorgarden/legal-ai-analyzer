@@ -51,6 +51,19 @@ describe("clauses data", () => {
     });
     expect(highRisk.length).toBeGreaterThan(0);
   });
+
+  it("anchors every high-risk finding to verified evidence", () => {
+    const highRisk = clauses.filter((cl: Clause) => cl.riskLevel === "high");
+    highRisk.forEach((cl) => {
+      expect(cl.evidenceAnchors?.length).toBeGreaterThanOrEqual(2);
+      cl.evidenceAnchors?.forEach((anchor) => {
+        expect(anchor.label).toBeTruthy();
+        expect(anchor.source).toBeTruthy();
+        expect(["contract-section", "statute", "case-law", "playbook"]).toContain(anchor.referenceType);
+        expect(Date.parse(anchor.verifiedAt)).not.toBeNaN();
+      });
+    });
+  });
 });
 
 describe("riskAssessment", () => {

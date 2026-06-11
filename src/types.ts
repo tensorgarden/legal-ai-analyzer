@@ -20,6 +20,13 @@ export type ClauseCategory =
   | "force-majeure"
   | "assignment";
 
+export interface EvidenceAnchor {
+  label: string;
+  source: string;
+  referenceType: "contract-section" | "statute" | "case-law" | "playbook";
+  verifiedAt: string;
+}
+
 export interface Clause {
   id: string;
   contractId: string;
@@ -30,6 +37,7 @@ export interface Clause {
   riskLevel: RiskLevel;
   issues: string[];
   recommendations: string[];
+  evidenceAnchors?: EvidenceAnchor[];
   position: { start: number; end: number };
 }
 

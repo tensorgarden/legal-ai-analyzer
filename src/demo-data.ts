@@ -161,6 +161,10 @@ export const clauses: Clause[] = [
     riskScore: 72, riskLevel: "high",
     issues: ["Cap is disproportionately low for an enterprise deal", "Carve-outs for gross negligence are missing"],
     recommendations: ["Negotiate cap to 12 months fees or $1M minimum", "Add carve-outs for gross negligence and willful misconduct"],
+    evidenceAnchors: [
+      { label: "MSA §9.2 Limitation of Liability", source: "contract section 9.2", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "Enterprise SaaS fallback cap playbook", source: "internal review playbook: liability caps", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
+    ],
     position: { start: 450, end: 720 },
   },
   {
@@ -177,6 +181,10 @@ export const clauses: Clause[] = [
     riskScore: 81, riskLevel: "high",
     issues: ["'Improving the Service' grants overly broad data usage rights", "No DPA referenced", "No mention of GDPR/CCPA compliance"],
     recommendations: ["Remove 'improving the Service' or limit to aggregated anonymized data", "Attach a compliant Data Processing Addendum"],
+    evidenceAnchors: [
+      { label: "MSA §5.4 Data Processing", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "GDPR Article 28 processor terms", source: "GDPR Article 28", referenceType: "statute", verifiedAt: "2026-06-10T12:00:00Z" },
+    ],
     position: { start: 1300, end: 1560 },
   },
   {
@@ -201,6 +209,10 @@ export const clauses: Clause[] = [
     riskScore: 88, riskLevel: "high",
     issues: ["24-month non-compete is likely unenforceable in CA, OK, ND", "Geographic scope is unreasonably broad", "No consideration for post-employment restriction"],
     recommendations: ["Reduce to 6-12 months", "Limit to regions where employee actually operated", "Add garden leave or severance consideration"],
+    evidenceAnchors: [
+      { label: "Employment Agreement §12 Non-Competition", source: "contract section 12", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "State non-compete enforceability matrix", source: "employment compliance playbook", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
+    ],
     position: { start: 600, end: 880 },
   },
   {
@@ -235,6 +247,10 @@ export const clauses: Clause[] = [
     riskScore: 70, riskLevel: "high",
     issues: ["Purely unilateral \u2014 Buyer has no reciprocal obligations", "Scope includes 'any and all claims' with no caps"],
     recommendations: ["Negotiate mutual indemnification", "Add reasonable caps and exclusions for Buyer's own negligence"],
+    evidenceAnchors: [
+      { label: "Vendor Agreement §7 Indemnification", source: "contract section 7", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "UCC remedies and risk allocation checklist", source: "commercial contracts playbook", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
+    ],
     position: { start: 400, end: 640 },
   },
   {
@@ -319,6 +335,10 @@ export const clauses: Clause[] = [
     riskScore: 75, riskLevel: "high",
     issues: ["12-month clawback period is excessive", "Full recovery disregards work performed", "No distinction between voluntary and involuntary churn"],
     recommendations: ["Reduce clawback to 3-6 months", "Pro-rate recovery based on time elapsed", "Exclude involuntary churn (e.g., customer bankruptcy)"],
+    evidenceAnchors: [
+      { label: "Employment Agreement §6.3 Commission Clawback", source: "contract section 6.3", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "State wage deduction review checklist", source: "employment compensation playbook", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
+    ],
     position: { start: 400, end: 640 },
   },
   {
