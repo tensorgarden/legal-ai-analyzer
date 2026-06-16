@@ -59,6 +59,7 @@ export interface ComplianceCheck {
   status: "pass" | "fail" | "review-required";
   details: string;
   lastChecked: string;
+  evidenceAnchors?: EvidenceAnchor[];
 }
 
 export interface Contract {

@@ -389,21 +389,37 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-001", contractId: "ctr-002", regulation: "GDPR Article 28", framework: "GDPR",
     status: "fail", details: "No Data Processing Agreement. Data usage for 'improving the Service' violates purpose limitation.",
     lastChecked: "2026-06-03T10:00:00Z",
+    evidenceAnchors: [
+      { label: "MSA §5.4 Data Processing terms", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-03T10:00:00Z" },
+      { label: "GDPR Article 28(3) processor obligations", source: "GDPR Article 28", referenceType: "statute", verifiedAt: "2026-06-03T10:00:00Z" },
+    ],
   },
   {
     id: "cmp-002", contractId: "ctr-002", regulation: "CCPA Section 1798.100", framework: "CCPA",
     status: "review-required", details: "Data processing terms lack disclosure of categories of personal information collected.",
     lastChecked: "2026-06-03T10:00:00Z",
+    evidenceAnchors: [
+      { label: "MSA §5.4 Data Processing terms", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-03T10:00:00Z" },
+      { label: "CCPA §1798.100(a) notice at collection", source: "CCPA Section 1798.100", referenceType: "statute", verifiedAt: "2026-06-03T10:00:00Z" },
+    ],
   },
   {
     id: "cmp-003", contractId: "ctr-003", regulation: "California Labor Code 2870", framework: "CA Employment",
     status: "fail", details: "IP assignment clause does not exclude employee inventions developed independently.",
     lastChecked: "2026-06-04T09:00:00Z",
+    evidenceAnchors: [
+      { label: "Employment Agreement §10 IP Assignment", source: "contract section 10", referenceType: "contract-section", verifiedAt: "2026-06-04T09:00:00Z" },
+      { label: "CA Labor Code §2870 invention exclusion", source: "California Labor Code 2870", referenceType: "statute", verifiedAt: "2026-06-04T09:00:00Z" },
+    ],
   },
   {
     id: "cmp-004", contractId: "ctr-003", regulation: "FTC Non-Compete Rule (2024)", framework: "FTC",
     status: "fail", details: "Broad 24-month non-compete conflicts with FTC rule prohibiting most non-competes.",
     lastChecked: "2026-06-04T09:00:00Z",
+    evidenceAnchors: [
+      { label: "Employment Agreement §12 Non-Competition", source: "contract section 12", referenceType: "contract-section", verifiedAt: "2026-06-04T09:00:00Z" },
+      { label: "FTC Non-Compete Clause Rule 16 CFR Part 910", source: "16 CFR Part 910", referenceType: "statute", verifiedAt: "2026-06-04T09:00:00Z" },
+    ],
   },
   {
     id: "cmp-005", contractId: "ctr-001", regulation: "Trade Secrets Act (DTSA)", framework: "DTSA",
@@ -414,11 +430,19 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-006", contractId: "ctr-004", regulation: "UCC Section 2-718", framework: "UCC",
     status: "review-required", details: "5% daily penalty may be deemed unreasonable liquidated damages under UCC.",
     lastChecked: "2026-06-05T14:00:00Z",
+    evidenceAnchors: [
+      { label: "Vendor Agreement §4 Delivery Penalties", source: "contract section 4", referenceType: "contract-section", verifiedAt: "2026-06-05T14:00:00Z" },
+      { label: "UCC §2-718(1) liquidated damages reasonableness", source: "UCC Section 2-718", referenceType: "statute", verifiedAt: "2026-06-05T14:00:00Z" },
+    ],
   },
   {
     id: "cmp-007", contractId: "ctr-005", regulation: "State Audit Laws", framework: "Software Audit",
     status: "review-required", details: "Unrestricted audit rights with short notice raise procedural fairness concerns.",
     lastChecked: "2026-06-06T12:00:00Z",
+    evidenceAnchors: [
+      { label: "License Agreement §3 Audit Rights", source: "contract section 3", referenceType: "contract-section", verifiedAt: "2026-06-06T12:00:00Z" },
+      { label: "Software audit reasonableness playbook", source: "internal review playbook: audit rights", referenceType: "playbook", verifiedAt: "2026-06-06T12:00:00Z" },
+    ],
   },
   {
     id: "cmp-008", contractId: "ctr-006", regulation: "Delaware LLC Act", framework: "DE Corporate",
@@ -429,6 +453,10 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-009", contractId: "ctr-008", regulation: "State Wage Laws", framework: "Employment",
     status: "review-required", details: "Commission clawback may violate state wage protection statutes in some jurisdictions.",
     lastChecked: "2026-06-09T08:00:00Z",
+    evidenceAnchors: [
+      { label: "Employment Agreement §6.3 Commission Clawback", source: "contract section 6.3", referenceType: "contract-section", verifiedAt: "2026-06-09T08:00:00Z" },
+      { label: "State wage deduction review checklist", source: "employment compensation playbook", referenceType: "playbook", verifiedAt: "2026-06-09T08:00:00Z" },
+    ],
   },
   {
     id: "cmp-010", contractId: "ctr-007", regulation: "Trade Secrets Act (DTSA)", framework: "DTSA",

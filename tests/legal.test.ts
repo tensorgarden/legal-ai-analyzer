@@ -86,6 +86,22 @@ describe("compliance data", () => {
     const fails = complianceChecks.filter((cc: ComplianceCheck) => cc.status === "fail");
     expect(fails.length).toBeGreaterThanOrEqual(1);
   });
+
+  it("failed and review-required checks cite verified evidence", () => {
+    const nonPassing = complianceChecks.filter(
+      (cc: ComplianceCheck) => cc.status === "fail" || cc.status === "review-required",
+    );
+    expect(nonPassing.length).toBeGreaterThanOrEqual(1);
+    nonPassing.forEach((cc) => {
+      expect(cc.evidenceAnchors?.length).toBeGreaterThanOrEqual(1);
+      cc.evidenceAnchors?.forEach((anchor) => {
+        expect(anchor.label).toBeTruthy();
+        expect(anchor.source).toBeTruthy();
+        expect(["contract-section", "statute", "case-law", "playbook"]).toContain(anchor.referenceType);
+        expect(Date.parse(anchor.verifiedAt)).not.toBeNaN();
+      });
+    });
+  });
 });
 
 describe("reviewTimeline", () => {
