@@ -66,6 +66,28 @@ describe("clauses data", () => {
   });
 });
 
+describe("evidence verification", () => {
+  const anchors = [
+    ...clauses.flatMap((cl: Clause) => cl.evidenceAnchors ?? []),
+    ...complianceChecks.flatMap((cc: ComplianceCheck) => cc.evidenceAnchors ?? []),
+  ];
+
+  it("requires manual verification for legal authorities that could hallucinate", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+
+    expect(legalAuthorities.length).toBeGreaterThan(0);
+    legalAuthorities.forEach((anchor) => {
+      const verifier = anchor.verifiedBy ?? "";
+      expect(anchor.verificationMethod).toBe("manual-source-check");
+      expect(verifier.trim().length).toBeGreaterThan(2);
+      expect(verifier).not.toMatch(/legal ai/i);
+      expect(Date.parse(anchor.verifiedAt)).not.toBeNaN();
+    });
+  });
+});
+
 describe("riskAssessment", () => {
   it("clause counts add up correctly", () => {
     const r: RiskAssessment = riskAssessment;

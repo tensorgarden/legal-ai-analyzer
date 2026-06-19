@@ -25,6 +25,8 @@ export interface EvidenceAnchor {
   source: string;
   referenceType: "contract-section" | "statute" | "case-law" | "playbook";
   verifiedAt: string;
+  verificationMethod?: "contract-text-match" | "manual-source-check" | "playbook-approved";
+  verifiedBy?: string;
 }
 
 export interface Clause {
