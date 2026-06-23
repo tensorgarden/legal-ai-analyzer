@@ -27,6 +27,8 @@ export interface EvidenceAnchor {
   verifiedAt: string;
   verificationMethod?: "contract-text-match" | "manual-source-check" | "playbook-approved";
   verifiedBy?: string;
+  sourceLocator?: string;
+  supportingExcerpt?: string;
 }
 
 export interface Clause {

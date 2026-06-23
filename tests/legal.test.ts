@@ -86,6 +86,19 @@ describe("evidence verification", () => {
       expect(Date.parse(anchor.verifiedAt)).not.toBeNaN();
     });
   });
+
+  it("pinpoints legal authority anchors to source text for human citation checks", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+
+    expect(legalAuthorities.length).toBeGreaterThan(0);
+    legalAuthorities.forEach((anchor) => {
+      expect(anchor.sourceLocator?.trim().length).toBeGreaterThan(6);
+      expect(anchor.supportingExcerpt?.trim().length).toBeGreaterThan(40);
+      expect(anchor.supportingExcerpt).not.toMatch(/placeholder|lorem|tbd/i);
+    });
+  });
 });
 
 describe("riskAssessment", () => {
