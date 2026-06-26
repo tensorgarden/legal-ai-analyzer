@@ -137,6 +137,25 @@ describe("compliance data", () => {
       });
     });
   });
+
+  it("routes non-passing compliance checks through qualified human review", () => {
+    const nonPassing = complianceChecks.filter(
+      (cc: ComplianceCheck) => cc.status === "fail" || cc.status === "review-required",
+    );
+    const validReviewerRoles = ["privacy-counsel", "employment-counsel", "commercial-counsel", "legal-ops"];
+
+    expect(nonPassing.length).toBeGreaterThanOrEqual(1);
+    nonPassing.forEach((cc) => {
+      const gate = cc.humanReviewGate;
+
+      expect(gate?.required).toBe(true);
+      expect(validReviewerRoles).toContain(gate?.reviewerRole);
+      expect(gate?.assignedTo.trim().length).toBeGreaterThan(2);
+      expect(gate?.assignedTo).not.toMatch(/legal ai|model|automation/i);
+      expect(Date.parse(gate?.dueAt ?? "")).not.toBeNaN();
+      expect(gate?.escalationReason.trim().length).toBeGreaterThan(60);
+    });
+  });
 });
 
 describe("reviewTimeline", () => {

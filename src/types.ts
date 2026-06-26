@@ -55,6 +55,14 @@ export interface RiskAssessment {
   riskHeatmap: { category: ClauseCategory; count: number; avgScore: number }[];
 }
 
+export interface HumanReviewGate {
+  required: boolean;
+  reviewerRole: "privacy-counsel" | "employment-counsel" | "commercial-counsel" | "legal-ops";
+  assignedTo: string;
+  dueAt: string;
+  escalationReason: string;
+}
+
 export interface ComplianceCheck {
   id: string;
   contractId: string;
@@ -64,6 +72,7 @@ export interface ComplianceCheck {
   details: string;
   lastChecked: string;
   evidenceAnchors?: EvidenceAnchor[];
+  humanReviewGate?: HumanReviewGate;
 }
 
 export interface Contract {
