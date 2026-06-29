@@ -389,6 +389,8 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-001", contractId: "ctr-002", regulation: "GDPR Article 28", framework: "GDPR",
     status: "fail", details: "No Data Processing Agreement. Data usage for 'improving the Service' violates purpose limitation.",
     lastChecked: "2026-06-03T10:00:00Z",
+    confidenceScore: 0.68,
+    confidenceRationale: "Source text shows a DPA gap, but counsel must confirm GDPR processor-term applicability before remediation language is used.",
     humanReviewGate: {
       required: true,
       reviewerRole: "privacy-counsel",
@@ -405,6 +407,8 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-002", contractId: "ctr-002", regulation: "CCPA Section 1798.100", framework: "CCPA",
     status: "review-required", details: "Data processing terms lack disclosure of categories of personal information collected.",
     lastChecked: "2026-06-03T10:00:00Z",
+    confidenceScore: 0.72,
+    confidenceRationale: "Notice-at-collection risk is grounded in the data clause, but jurisdiction and personal-information categories still need review.",
     humanReviewGate: {
       required: true,
       reviewerRole: "privacy-counsel",
@@ -421,6 +425,8 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-003", contractId: "ctr-003", regulation: "California Labor Code 2870", framework: "CA Employment",
     status: "fail", details: "IP assignment clause does not exclude employee inventions developed independently.",
     lastChecked: "2026-06-04T09:00:00Z",
+    confidenceScore: 0.74,
+    confidenceRationale: "The invention-assignment issue is source-grounded, while state-law carve-out language requires employment counsel validation.",
     humanReviewGate: {
       required: true,
       reviewerRole: "employment-counsel",
@@ -437,6 +443,8 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-004", contractId: "ctr-003", regulation: "FTC Non-Compete Rule (2024)", framework: "FTC",
     status: "fail", details: "Broad 24-month non-compete conflicts with FTC rule prohibiting most non-competes.",
     lastChecked: "2026-06-04T09:00:00Z",
+    confidenceScore: 0.61,
+    confidenceRationale: "FTC non-compete authority status is unsettled, so the model flags a low-confidence conclusion for manual legal verification.",
     humanReviewGate: {
       required: true,
       reviewerRole: "employment-counsel",
@@ -453,11 +461,15 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-005", contractId: "ctr-001", regulation: "Trade Secrets Act (DTSA)", framework: "DTSA",
     status: "pass", details: "NDA adequately defines confidential information and reasonable protection measures.",
     lastChecked: "2026-06-02T11:00:00Z",
+    confidenceScore: 0.94,
+    confidenceRationale: "Contract language and DTSA playbook criteria align cleanly with low-risk confidentiality obligations and no open authority dispute.",
   },
   {
     id: "cmp-006", contractId: "ctr-004", regulation: "UCC Section 2-718", framework: "UCC",
     status: "review-required", details: "5% daily penalty may be deemed unreasonable liquidated damages under UCC.",
     lastChecked: "2026-06-05T14:00:00Z",
+    confidenceScore: 0.7,
+    confidenceRationale: "Penalty math is visible in the contract, but UCC reasonableness depends on anticipated harm and proof facts counsel must review.",
     humanReviewGate: {
       required: true,
       reviewerRole: "commercial-counsel",
@@ -474,6 +486,8 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-007", contractId: "ctr-005", regulation: "State Audit Laws", framework: "Software Audit",
     status: "review-required", details: "Unrestricted audit rights with short notice raise procedural fairness concerns.",
     lastChecked: "2026-06-06T12:00:00Z",
+    confidenceScore: 0.78,
+    confidenceRationale: "Audit-rights language is clear, though procedural fairness depends on playbook thresholds and negotiation context.",
     humanReviewGate: {
       required: true,
       reviewerRole: "commercial-counsel",
@@ -490,11 +504,15 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-008", contractId: "ctr-006", regulation: "Delaware LLC Act", framework: "DE Corporate",
     status: "pass", details: "JV governance structure complies with Delaware LLC Act requirements.",
     lastChecked: "2026-06-07T15:00:00Z",
+    confidenceScore: 0.92,
+    confidenceRationale: "Governance terms map cleanly to the Delaware LLC review checklist with balanced board controls and no unresolved flags.",
   },
   {
     id: "cmp-009", contractId: "ctr-008", regulation: "State Wage Laws", framework: "Employment",
     status: "review-required", details: "Commission clawback may violate state wage protection statutes in some jurisdictions.",
     lastChecked: "2026-06-09T08:00:00Z",
+    confidenceScore: 0.69,
+    confidenceRationale: "Commission clawback facts are contract-grounded, but state wage deduction exposure varies by jurisdiction and requires counsel.",
     humanReviewGate: {
       required: true,
       reviewerRole: "employment-counsel",
@@ -511,6 +529,8 @@ export const complianceChecks: ComplianceCheck[] = [
     id: "cmp-010", contractId: "ctr-007", regulation: "Trade Secrets Act (DTSA)", framework: "DTSA",
     status: "pass", details: "One-way NDA meets DTSA reasonable measures standard.",
     lastChecked: "2026-06-08T10:00:00Z",
+    confidenceScore: 0.95,
+    confidenceRationale: "NDA text matches DTSA reasonable-measures criteria with straightforward confidential-information handling and no authority conflict.",
   },
 ];
 

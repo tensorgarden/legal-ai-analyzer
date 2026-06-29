@@ -21,6 +21,12 @@ const complianceStatusVariant = (status: string) => {
   return "warning";
 };
 
+const confidenceVariant = (score: number): "success" | "info" | "warning" => {
+  if (score >= 0.9) return "success";
+  if (score >= 0.75) return "info";
+  return "warning";
+};
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -209,6 +215,7 @@ export default function DashboardPage() {
                   <th className="px-5 py-3">Framework</th>
                   <th className="px-5 py-3">Status</th>
                   <th className="px-5 py-3">Details</th>
+                  <th className="px-5 py-3">Confidence</th>
                   <th className="px-5 py-3">Last Checked</th>
                 </tr>
               </thead>
@@ -225,6 +232,14 @@ export default function DashboardPage() {
                         </Badge>
                       </td>
                       <td className="px-5 py-3.5 max-w-md text-xs text-gray-600">{cc.details}</td>
+                      <td className="px-5 py-3.5 max-w-xs text-xs text-gray-600">
+                        <div className="flex flex-col gap-1">
+                          <Badge variant={confidenceVariant(cc.confidenceScore)}>
+                            {Math.round(cc.confidenceScore * 100)}% confidence
+                          </Badge>
+                          <span className="line-clamp-2 text-gray-500">{cc.confidenceRationale}</span>
+                        </div>
+                      </td>
                       <td className="px-5 py-3.5 text-xs text-gray-500">
                         {new Date(cc.lastChecked).toLocaleDateString("en-US", {
                           month: "short",

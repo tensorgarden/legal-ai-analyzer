@@ -138,6 +138,22 @@ describe("compliance data", () => {
     });
   });
 
+  it("uses confidence scoring to target human review for uncertain legal conclusions", () => {
+    complianceChecks.forEach((cc: ComplianceCheck) => {
+      expect(cc.confidenceScore).toBeGreaterThanOrEqual(0);
+      expect(cc.confidenceScore).toBeLessThanOrEqual(1);
+      expect(cc.confidenceRationale.trim().length).toBeGreaterThan(50);
+    });
+
+    const lowConfidence = complianceChecks.filter((cc: ComplianceCheck) => cc.confidenceScore < 0.85);
+    expect(lowConfidence.length).toBeGreaterThan(0);
+    lowConfidence.forEach((cc) => {
+      expect(["fail", "review-required"]).toContain(cc.status);
+      expect(cc.humanReviewGate?.required).toBe(true);
+      expect(cc.confidenceRationale).toMatch(/source|jurisdiction|authority|playbook|facts|review/i);
+    });
+  });
+
   it("routes non-passing compliance checks through qualified human review", () => {
     const nonPassing = complianceChecks.filter(
       (cc: ComplianceCheck) => cc.status === "fail" || cc.status === "review-required",

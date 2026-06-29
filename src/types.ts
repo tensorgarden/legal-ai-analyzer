@@ -71,6 +71,8 @@ export interface ComplianceCheck {
   status: "pass" | "fail" | "review-required";
   details: string;
   lastChecked: string;
+  confidenceScore: number; // 0-1, lower scores require targeted human review
+  confidenceRationale: string;
   evidenceAnchors?: EvidenceAnchor[];
   humanReviewGate?: HumanReviewGate;
 }
