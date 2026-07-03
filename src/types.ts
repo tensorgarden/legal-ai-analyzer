@@ -20,6 +20,19 @@ export type ClauseCategory =
   | "force-majeure"
   | "assignment";
 
+export type CitationAlignment = "supports-claim" | "needs-counsel-review" | "does-not-support";
+
+export type AuthorityStrength = "binding" | "persuasive" | "unsettled";
+
+export interface CitationVerification {
+  exists: boolean;
+  alignment: CitationAlignment;
+  authorityStrength: AuthorityStrength;
+  jurisdiction: string;
+  checkedAt: string;
+  checkedBy: string;
+}
+
 export interface EvidenceAnchor {
   label: string;
   source: string;
@@ -29,6 +42,7 @@ export interface EvidenceAnchor {
   verifiedBy?: string;
   sourceLocator?: string;
   supportingExcerpt?: string;
+  citationVerification?: CitationVerification;
 }
 
 export interface Clause {

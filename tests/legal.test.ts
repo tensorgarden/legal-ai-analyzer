@@ -99,6 +99,35 @@ describe("evidence verification", () => {
       expect(anchor.supportingExcerpt).not.toMatch(/placeholder|lorem|tbd/i);
     });
   });
+
+  it("checks citation existence, claim alignment, and authority strength before reliance", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+    const validAlignments = ["supports-claim", "needs-counsel-review"];
+    const validAuthorityStrengths = ["binding", "persuasive", "unsettled"];
+
+    expect(legalAuthorities.length).toBeGreaterThan(0);
+    legalAuthorities.forEach((anchor) => {
+      const verification = anchor.citationVerification;
+
+      expect(verification?.exists).toBe(true);
+      expect(validAlignments).toContain(verification?.alignment);
+      expect(validAuthorityStrengths).toContain(verification?.authorityStrength);
+      expect(verification?.jurisdiction.trim().length).toBeGreaterThan(2);
+      expect(Date.parse(verification?.checkedAt ?? "")).not.toBeNaN();
+      expect(verification?.checkedBy).toBe(anchor.verifiedBy);
+      expect(verification?.checkedBy).not.toMatch(/legal ai|model|automation/i);
+    });
+
+    const unsettledAuthorities = legalAuthorities.filter(
+      (anchor) => anchor.citationVerification?.authorityStrength === "unsettled",
+    );
+    expect(unsettledAuthorities.length).toBeGreaterThan(0);
+    unsettledAuthorities.forEach((anchor) => {
+      expect(anchor.citationVerification?.alignment).toBe("needs-counsel-review");
+    });
+  });
 });
 
 describe("riskAssessment", () => {

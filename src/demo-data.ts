@@ -183,7 +183,7 @@ export const clauses: Clause[] = [
     recommendations: ["Remove 'improving the Service' or limit to aggregated anonymized data", "Attach a compliant Data Processing Addendum"],
     evidenceAnchors: [
       { label: "MSA §5.4 Data Processing", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
-      { label: "GDPR Article 28 processor terms", source: "GDPR Article 28", referenceType: "statute", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "GDPR Art. 28(3)(a)-(h)", supportingExcerpt: "Processor terms must bind the processor to documented instructions and Article 28 safeguards." },
+      { label: "GDPR Article 28 processor terms", source: "GDPR Article 28", referenceType: "statute", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "GDPR Art. 28(3)(a)-(h)", supportingExcerpt: "Processor terms must bind the processor to documented instructions and Article 28 safeguards.", citationVerification: { exists: true, alignment: "supports-claim", authorityStrength: "binding", jurisdiction: "European Union", checkedAt: "2026-06-10T12:00:00Z", checkedBy: "David Park" } },
     ],
     position: { start: 1300, end: 1560 },
   },
@@ -400,7 +400,7 @@ export const complianceChecks: ComplianceCheck[] = [
     },
     evidenceAnchors: [
       { label: "MSA §5.4 Data Processing terms", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-03T10:00:00Z" },
-      { label: "GDPR Article 28(3) processor obligations", source: "GDPR Article 28", referenceType: "statute", verifiedAt: "2026-06-03T10:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "GDPR Art. 28(3)(a)-(h)", supportingExcerpt: "Processor obligations require documented instructions, confidentiality, security, subprocessor, and audit terms." },
+      { label: "GDPR Article 28(3) processor obligations", source: "GDPR Article 28", referenceType: "statute", verifiedAt: "2026-06-03T10:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "GDPR Art. 28(3)(a)-(h)", supportingExcerpt: "Processor obligations require documented instructions, confidentiality, security, subprocessor, and audit terms.", citationVerification: { exists: true, alignment: "supports-claim", authorityStrength: "binding", jurisdiction: "European Union", checkedAt: "2026-06-03T10:00:00Z", checkedBy: "David Park" } },
     ],
   },
   {
@@ -418,7 +418,7 @@ export const complianceChecks: ComplianceCheck[] = [
     },
     evidenceAnchors: [
       { label: "MSA §5.4 Data Processing terms", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-03T10:00:00Z" },
-      { label: "CCPA §1798.100(a) notice at collection", source: "CCPA Section 1798.100", referenceType: "statute", verifiedAt: "2026-06-03T10:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "Cal. Civ. Code §1798.100(a)-(b)", supportingExcerpt: "Notice at collection must identify categories of personal information and purposes before collection." },
+      { label: "CCPA §1798.100(a) notice at collection", source: "CCPA Section 1798.100", referenceType: "statute", verifiedAt: "2026-06-03T10:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "Cal. Civ. Code §1798.100(a)-(b)", supportingExcerpt: "Notice at collection must identify categories of personal information and purposes before collection.", citationVerification: { exists: true, alignment: "supports-claim", authorityStrength: "binding", jurisdiction: "California", checkedAt: "2026-06-03T10:00:00Z", checkedBy: "David Park" } },
     ],
   },
   {
@@ -436,7 +436,7 @@ export const complianceChecks: ComplianceCheck[] = [
     },
     evidenceAnchors: [
       { label: "Employment Agreement §10 IP Assignment", source: "contract section 10", referenceType: "contract-section", verifiedAt: "2026-06-04T09:00:00Z" },
-      { label: "CA Labor Code §2870 invention exclusion", source: "California Labor Code 2870", referenceType: "statute", verifiedAt: "2026-06-04T09:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "Sarah Chen", sourceLocator: "Cal. Lab. Code §2870(a)", supportingExcerpt: "Employee invention assignments must exclude inventions developed entirely on personal time without employer resources." },
+      { label: "CA Labor Code §2870 invention exclusion", source: "California Labor Code 2870", referenceType: "statute", verifiedAt: "2026-06-04T09:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "Sarah Chen", sourceLocator: "Cal. Lab. Code §2870(a)", supportingExcerpt: "Employee invention assignments must exclude inventions developed entirely on personal time without employer resources.", citationVerification: { exists: true, alignment: "supports-claim", authorityStrength: "binding", jurisdiction: "California", checkedAt: "2026-06-04T09:00:00Z", checkedBy: "Sarah Chen" } },
     ],
   },
   {
@@ -454,7 +454,7 @@ export const complianceChecks: ComplianceCheck[] = [
     },
     evidenceAnchors: [
       { label: "Employment Agreement §12 Non-Competition", source: "contract section 12", referenceType: "contract-section", verifiedAt: "2026-06-04T09:00:00Z" },
-      { label: "FTC Non-Compete Clause Rule 16 CFR Part 910", source: "16 CFR Part 910", referenceType: "statute", verifiedAt: "2026-06-04T09:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "Sarah Chen", sourceLocator: "16 CFR Part 910 §910.2", supportingExcerpt: "Non-compete clauses require current-status legal review before counsel relies on the rule as authority." },
+      { label: "FTC Non-Compete Clause Rule 16 CFR Part 910", source: "16 CFR Part 910", referenceType: "statute", verifiedAt: "2026-06-04T09:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "Sarah Chen", sourceLocator: "16 CFR Part 910 §910.2", supportingExcerpt: "Non-compete clauses require current-status legal review before counsel relies on the rule as authority.", citationVerification: { exists: true, alignment: "needs-counsel-review", authorityStrength: "unsettled", jurisdiction: "United States", checkedAt: "2026-06-04T09:00:00Z", checkedBy: "Sarah Chen" } },
     ],
   },
   {
@@ -479,7 +479,7 @@ export const complianceChecks: ComplianceCheck[] = [
     },
     evidenceAnchors: [
       { label: "Vendor Agreement §4 Delivery Penalties", source: "contract section 4", referenceType: "contract-section", verifiedAt: "2026-06-05T14:00:00Z" },
-      { label: "UCC §2-718(1) liquidated damages reasonableness", source: "UCC Section 2-718", referenceType: "statute", verifiedAt: "2026-06-05T14:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "UCC §2-718(1)", supportingExcerpt: "Liquidated damages must be reasonable in light of anticipated or actual harm and difficulties of proof." },
+      { label: "UCC §2-718(1) liquidated damages reasonableness", source: "UCC Section 2-718", referenceType: "statute", verifiedAt: "2026-06-05T14:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "UCC §2-718(1)", supportingExcerpt: "Liquidated damages must be reasonable in light of anticipated or actual harm and difficulties of proof.", citationVerification: { exists: true, alignment: "needs-counsel-review", authorityStrength: "persuasive", jurisdiction: "UCC adopting jurisdiction", checkedAt: "2026-06-05T14:00:00Z", checkedBy: "David Park" } },
     ],
   },
   {
