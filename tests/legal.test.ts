@@ -64,6 +64,28 @@ describe("clauses data", () => {
       });
     });
   });
+
+  it("links high-risk contract-section anchors to exact source text snippets", () => {
+    const highRisk = clauses.filter((cl: Clause) => cl.riskLevel === "high");
+    const contractAnchors = highRisk.flatMap((cl: Clause) =>
+      (cl.evidenceAnchors ?? [])
+        .filter((anchor) => anchor.referenceType === "contract-section")
+        .map((anchor) => ({ anchor, clauseText: cl.text.toLowerCase() })),
+    );
+
+    expect(contractAnchors).toHaveLength(highRisk.length);
+    contractAnchors.forEach(({ anchor, clauseText }) => {
+      const locator = anchor.sourceLocator ?? "";
+      const excerpt = anchor.supportingExcerpt ?? "";
+      const excerptTerms = excerpt.toLowerCase().match(/[a-z]{5,}/g) ?? [];
+
+      expect(anchor.verificationMethod).toBe("contract-text-match");
+      expect(locator.trim()).toMatch(/§|section|clause|page|p\./i);
+      expect(excerpt.trim().length).toBeGreaterThan(60);
+      expect(excerpt).not.toMatch(/placeholder|lorem|tbd/i);
+      expect(excerptTerms.some((term) => clauseText.includes(term))).toBe(true);
+    });
+  });
 });
 
 describe("evidence verification", () => {

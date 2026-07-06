@@ -162,7 +162,7 @@ export const clauses: Clause[] = [
     issues: ["Cap is disproportionately low for an enterprise deal", "Carve-outs for gross negligence are missing"],
     recommendations: ["Negotiate cap to 12 months fees or $1M minimum", "Add carve-outs for gross negligence and willful misconduct"],
     evidenceAnchors: [
-      { label: "MSA §9.2 Limitation of Liability", source: "contract section 9.2", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "MSA §9.2 Limitation of Liability", source: "contract section 9.2", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "contract-text-match", sourceLocator: "MSA §9.2, p. 11", supportingExcerpt: "Provider's total liability shall not exceed the fees paid in the three months preceding the claim." },
       { label: "Enterprise SaaS fallback cap playbook", source: "internal review playbook: liability caps", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
     ],
     position: { start: 450, end: 720 },
@@ -182,7 +182,7 @@ export const clauses: Clause[] = [
     issues: ["'Improving the Service' grants overly broad data usage rights", "No DPA referenced", "No mention of GDPR/CCPA compliance"],
     recommendations: ["Remove 'improving the Service' or limit to aggregated anonymized data", "Attach a compliant Data Processing Addendum"],
     evidenceAnchors: [
-      { label: "MSA §5.4 Data Processing", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "MSA §5.4 Data Processing", source: "contract section 5.4", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "contract-text-match", sourceLocator: "MSA §5.4, p. 7", supportingExcerpt: "Provider may process Customer Data for providing and improving the Service without an attached Data Processing Addendum." },
       { label: "GDPR Article 28 processor terms", source: "GDPR Article 28", referenceType: "statute", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "manual-source-check", verifiedBy: "David Park", sourceLocator: "GDPR Art. 28(3)(a)-(h)", supportingExcerpt: "Processor terms must bind the processor to documented instructions and Article 28 safeguards.", citationVerification: { exists: true, alignment: "supports-claim", authorityStrength: "binding", jurisdiction: "European Union", checkedAt: "2026-06-10T12:00:00Z", checkedBy: "David Park" } },
     ],
     position: { start: 1300, end: 1560 },
@@ -210,7 +210,7 @@ export const clauses: Clause[] = [
     issues: ["24-month non-compete is likely unenforceable in CA, OK, ND", "Geographic scope is unreasonably broad", "No consideration for post-employment restriction"],
     recommendations: ["Reduce to 6-12 months", "Limit to regions where employee actually operated", "Add garden leave or severance consideration"],
     evidenceAnchors: [
-      { label: "Employment Agreement §12 Non-Competition", source: "contract section 12", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "Employment Agreement §12 Non-Competition", source: "contract section 12", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "contract-text-match", sourceLocator: "Employment Agreement §12, p. 16", supportingExcerpt: "Employee agrees not to engage in any business competitive with the Company for 24 months post-termination in North America." },
       { label: "State non-compete enforceability matrix", source: "employment compliance playbook", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
     ],
     position: { start: 600, end: 880 },
@@ -248,7 +248,7 @@ export const clauses: Clause[] = [
     issues: ["Purely unilateral \u2014 Buyer has no reciprocal obligations", "Scope includes 'any and all claims' with no caps"],
     recommendations: ["Negotiate mutual indemnification", "Add reasonable caps and exclusions for Buyer's own negligence"],
     evidenceAnchors: [
-      { label: "Vendor Agreement §7 Indemnification", source: "contract section 7", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "Vendor Agreement §7 Indemnification", source: "contract section 7", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "contract-text-match", sourceLocator: "Vendor Agreement §7, p. 9", supportingExcerpt: "Supplier shall indemnify and hold harmless Buyer from any and all claims arising from the supplied components." },
       { label: "UCC remedies and risk allocation checklist", source: "commercial contracts playbook", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
     ],
     position: { start: 400, end: 640 },
@@ -336,7 +336,7 @@ export const clauses: Clause[] = [
     issues: ["12-month clawback period is excessive", "Full recovery disregards work performed", "No distinction between voluntary and involuntary churn"],
     recommendations: ["Reduce clawback to 3-6 months", "Pro-rate recovery based on time elapsed", "Exclude involuntary churn (e.g., customer bankruptcy)"],
     evidenceAnchors: [
-      { label: "Employment Agreement §6.3 Commission Clawback", source: "contract section 6.3", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z" },
+      { label: "Employment Agreement §6.3 Commission Clawback", source: "contract section 6.3", referenceType: "contract-section", verifiedAt: "2026-06-10T12:00:00Z", verificationMethod: "contract-text-match", sourceLocator: "Employment Agreement §6.3, p. 8", supportingExcerpt: "Commissions paid on sales where the customer cancels within 12 months shall be fully recoverable by the Company." },
       { label: "State wage deduction review checklist", source: "employment compensation playbook", referenceType: "playbook", verifiedAt: "2026-06-10T12:00:00Z" },
     ],
     position: { start: 400, end: 640 },
