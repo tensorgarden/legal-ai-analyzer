@@ -1,4 +1,11 @@
-import type { Contract, Clause, RiskAssessment, ComplianceCheck, ReviewTimelineEvent } from "@/types";
+import type {
+  Contract,
+  Clause,
+  RiskAssessment,
+  ComplianceCheck,
+  ReviewTimelineEvent,
+  PrivilegeHandlingReview,
+} from "@/types";
 
 // ─── 8 Contracts ─────────────────────────────────────────────────────────────────
 
@@ -531,6 +538,50 @@ export const complianceChecks: ComplianceCheck[] = [
     lastChecked: "2026-06-08T10:00:00Z",
     confidenceScore: 0.95,
     confidenceRationale: "NDA text matches DTSA reasonable-measures criteria with straightforward confidential-information handling and no authority conflict.",
+  },
+];
+
+// ─── Privilege and AI Data-Handling Reviews ───────────────────────────────────────
+
+export const privilegeHandlingReviews: PrivilegeHandlingReview[] = [
+  {
+    id: "phr-001",
+    contractId: "ctr-002",
+    sensitivity: "confidential",
+    requestedEnvironment: "enterprise-private",
+    decision: "approved-private",
+    providerTrainingOptOut: true,
+    retentionDays: 0,
+    counselDirected: true,
+    reviewedBy: "Maya Gupta",
+    reviewedAt: "2026-06-03T09:30:00Z",
+    handlingNote: "Approved for the private legal workspace after confirming zero retention, no provider training, and counsel-directed review scope.",
+  },
+  {
+    id: "phr-002",
+    contractId: "ctr-003",
+    sensitivity: "potentially-privileged",
+    requestedEnvironment: "local-sandbox",
+    decision: "counsel-review-required",
+    providerTrainingOptOut: true,
+    retentionDays: 0,
+    counselDirected: true,
+    reviewedBy: "Sarah Chen",
+    reviewedAt: "2026-06-04T08:30:00Z",
+    handlingNote: "Restricted to a local sandbox while employment counsel confirms privilege treatment and directs the permitted analysis workflow.",
+  },
+  {
+    id: "phr-003",
+    contractId: "ctr-005",
+    sensitivity: "confidential",
+    requestedEnvironment: "public-ai",
+    decision: "blocked-public-tool",
+    providerTrainingOptOut: false,
+    retentionDays: null,
+    counselDirected: false,
+    reviewedBy: "David Park",
+    reviewedAt: "2026-06-06T11:30:00Z",
+    handlingNote: "Blocked because the requested public tool did not provide acceptable training or retention controls; reroute to the approved private workspace.",
   },
 ];
 

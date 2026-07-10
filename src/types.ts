@@ -77,6 +77,29 @@ export interface HumanReviewGate {
   escalationReason: string;
 }
 
+export type PrivilegeSensitivity = "confidential" | "potentially-privileged";
+
+export type AIProcessingEnvironment = "enterprise-private" | "local-sandbox" | "public-ai";
+
+export type AIProcessingDecision =
+  | "approved-private"
+  | "counsel-review-required"
+  | "blocked-public-tool";
+
+export interface PrivilegeHandlingReview {
+  id: string;
+  contractId: string;
+  sensitivity: PrivilegeSensitivity;
+  requestedEnvironment: AIProcessingEnvironment;
+  decision: AIProcessingDecision;
+  providerTrainingOptOut: boolean;
+  retentionDays: number | null;
+  counselDirected: boolean;
+  reviewedBy: string;
+  reviewedAt: string;
+  handlingNote: string;
+}
+
 export interface ComplianceCheck {
   id: string;
   contractId: string;

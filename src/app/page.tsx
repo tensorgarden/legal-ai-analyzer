@@ -6,6 +6,7 @@ import {
   clauses,
   riskAssessment,
   complianceChecks,
+  privilegeHandlingReviews,
   reviewTimeline,
 } from "@/demo-data";
 
@@ -25,6 +26,12 @@ const confidenceVariant = (score: number): "success" | "info" | "warning" => {
   if (score >= 0.9) return "success";
   if (score >= 0.75) return "info";
   return "warning";
+};
+
+const privilegeDecisionVariant = (decision: string): "success" | "warning" | "high" => {
+  if (decision === "approved-private") return "success";
+  if (decision === "counsel-review-required") return "warning";
+  return "high";
 };
 
 export default function DashboardPage() {
@@ -102,6 +109,59 @@ export default function DashboardPage() {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </section>
+
+      {/* ─── Privilege and AI Handling ─────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-1 text-2xl font-bold tracking-tight text-ink">Privilege &amp; AI Handling</h2>
+        <p className="mb-5 text-sm text-gray-500">
+          Pre-processing checks for confidentiality, privilege, retention, and provider training controls
+        </p>
+        <Card className="overflow-hidden !p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-gray-100 bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <tr>
+                  <th className="px-5 py-3">Contract</th>
+                  <th className="px-5 py-3">Sensitivity</th>
+                  <th className="px-5 py-3">Requested environment</th>
+                  <th className="px-5 py-3">Decision</th>
+                  <th className="px-5 py-3">Review</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {privilegeHandlingReviews.map((review) => {
+                  const contract = contracts.find((item) => item.id === review.contractId);
+                  return (
+                    <tr key={review.id} className="transition-colors hover:bg-gray-50">
+                      <td className="px-5 py-3.5">
+                        <div className="font-medium text-ink">{contract?.title ?? review.contractId}</div>
+                        <p className="mt-1 max-w-xl text-xs text-gray-500">{review.handlingNote}</p>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <Badge variant={review.sensitivity === "potentially-privileged" ? "warning" : "info"}>
+                          {review.sensitivity.replaceAll("-", " ")}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3.5 text-xs font-medium text-gray-600">
+                        {review.requestedEnvironment.replaceAll("-", " ")}
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <Badge variant={privilegeDecisionVariant(review.decision)}>
+                          {review.decision.replaceAll("-", " ")}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3.5 text-xs text-gray-600">
+                        <div className="font-medium text-gray-700">{review.reviewedBy}</div>
+                        <div>{review.providerTrainingOptOut ? "Training disabled" : "Training control missing"}</div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

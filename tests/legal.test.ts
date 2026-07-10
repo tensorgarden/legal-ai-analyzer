@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { contracts, clauses, riskAssessment, complianceChecks, reviewTimeline, heroMetrics } from "@/demo-data";
+import {
+  contracts,
+  clauses,
+  riskAssessment,
+  complianceChecks,
+  privilegeHandlingReviews,
+  reviewTimeline,
+  heroMetrics,
+} from "@/demo-data";
 import type { Contract, Clause, RiskAssessment, ComplianceCheck, ReviewTimelineEvent } from "@/types";
 
 describe("contracts data", () => {
@@ -221,6 +229,64 @@ describe("compliance data", () => {
       expect(gate?.assignedTo).not.toMatch(/legal ai|model|automation/i);
       expect(Date.parse(gate?.dueAt ?? "")).not.toBeNaN();
       expect(gate?.escalationReason.trim().length).toBeGreaterThan(60);
+    });
+  });
+});
+
+describe("privilege and AI data handling", () => {
+  it("records accountable pre-processing reviews for known contracts", () => {
+    const knownContractIds = new Set(contracts.map((contract) => contract.id));
+    const reviewedContractIds = privilegeHandlingReviews.map((review) => review.contractId);
+
+    expect(privilegeHandlingReviews.length).toBeGreaterThanOrEqual(3);
+    expect(new Set(reviewedContractIds).size).toBe(reviewedContractIds.length);
+    privilegeHandlingReviews.forEach((review) => {
+      expect(knownContractIds.has(review.contractId)).toBe(true);
+      expect(review.reviewedBy.trim().length).toBeGreaterThan(2);
+      expect(review.reviewedBy).not.toMatch(/legal ai|model|automation/i);
+      expect(Date.parse(review.reviewedAt)).not.toBeNaN();
+      expect(review.handlingNote.trim().length).toBeGreaterThan(80);
+    });
+  });
+
+  it("keeps potentially privileged material private and counsel-directed", () => {
+    const potentiallyPrivileged = privilegeHandlingReviews.filter(
+      (review) => review.sensitivity === "potentially-privileged",
+    );
+
+    expect(potentiallyPrivileged.length).toBeGreaterThan(0);
+    potentiallyPrivileged.forEach((review) => {
+      expect(review.requestedEnvironment).not.toBe("public-ai");
+      expect(review.providerTrainingOptOut).toBe(true);
+      expect(review.counselDirected).toBe(true);
+      expect(["approved-private", "counsel-review-required"]).toContain(review.decision);
+    });
+  });
+
+  it("blocks public AI tools when confidentiality controls are inadequate", () => {
+    const publicToolRequests = privilegeHandlingReviews.filter(
+      (review) => review.requestedEnvironment === "public-ai",
+    );
+
+    expect(publicToolRequests.length).toBeGreaterThan(0);
+    publicToolRequests.forEach((review) => {
+      expect(review.decision).toBe("blocked-public-tool");
+      expect(review.handlingNote).toMatch(/blocked|reroute|private workspace/i);
+    });
+  });
+
+  it("approves private processing only with training and retention safeguards", () => {
+    const approved = privilegeHandlingReviews.filter(
+      (review) => review.decision === "approved-private",
+    );
+
+    expect(approved.length).toBeGreaterThan(0);
+    approved.forEach((review) => {
+      expect(["enterprise-private", "local-sandbox"]).toContain(review.requestedEnvironment);
+      expect(review.providerTrainingOptOut).toBe(true);
+      expect(review.retentionDays ?? -1).toBeGreaterThanOrEqual(0);
+      expect(review.retentionDays ?? 31).toBeLessThanOrEqual(30);
+      expect(review.counselDirected).toBe(true);
     });
   });
 });
