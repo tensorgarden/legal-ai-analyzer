@@ -34,6 +34,11 @@ const privilegeDecisionVariant = (decision: string): "success" | "warning" | "hi
   return "high";
 };
 
+const legalAuthorityStatus = (check: (typeof complianceChecks)[number]) =>
+  check.evidenceAnchors?.find(
+    (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+  )?.citationVerification?.treatmentStatus;
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -298,6 +303,11 @@ export default function DashboardPage() {
                             {Math.round(cc.confidenceScore * 100)}% confidence
                           </Badge>
                           <span className="line-clamp-2 text-gray-500">{cc.confidenceRationale}</span>
+                          {legalAuthorityStatus(cc) && (
+                            <span className="font-medium capitalize text-gray-500">
+                              Authority: {legalAuthorityStatus(cc)?.replaceAll("-", " ")}
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td className="px-5 py-3.5 text-xs text-gray-500">

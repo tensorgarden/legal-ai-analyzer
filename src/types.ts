@@ -24,10 +24,18 @@ export type CitationAlignment = "supports-claim" | "needs-counsel-review" | "doe
 
 export type AuthorityStrength = "binding" | "persuasive" | "unsettled";
 
+export type AuthorityTreatmentStatus =
+  | "good-law"
+  | "negative-treatment"
+  | "superseded"
+  | "status-pending";
+
 export interface CitationVerification {
   exists: boolean;
   alignment: CitationAlignment;
   authorityStrength: AuthorityStrength;
+  treatmentStatus: AuthorityTreatmentStatus;
+  treatmentSource: string;
   jurisdiction: string;
   checkedAt: string;
   checkedBy: string;

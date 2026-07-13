@@ -158,6 +158,41 @@ describe("evidence verification", () => {
       expect(anchor.citationVerification?.alignment).toBe("needs-counsel-review");
     });
   });
+
+  it("records a current-law treatment check for every legal authority", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+    const validTreatmentStatuses = [
+      "good-law",
+      "negative-treatment",
+      "superseded",
+      "status-pending",
+    ];
+
+    expect(legalAuthorities.length).toBeGreaterThan(0);
+    legalAuthorities.forEach((anchor) => {
+      const verification = anchor.citationVerification;
+
+      expect(validTreatmentStatuses).toContain(verification?.treatmentStatus);
+      expect(verification?.treatmentSource.trim().length).toBeGreaterThan(15);
+      expect(verification?.treatmentSource).toMatch(
+        /official|legislative|federal|citator|regulation|docket/i,
+      );
+    });
+  });
+
+  it("prevents unresolved or negatively treated authority from supporting reliance", () => {
+    const unresolvedAuthorities = anchors.filter((anchor) => {
+      const status = anchor.citationVerification?.treatmentStatus;
+      return status && status !== "good-law";
+    });
+
+    expect(unresolvedAuthorities.length).toBeGreaterThan(0);
+    unresolvedAuthorities.forEach((anchor) => {
+      expect(anchor.citationVerification?.alignment).toBe("needs-counsel-review");
+    });
+  });
 });
 
 describe("riskAssessment", () => {
