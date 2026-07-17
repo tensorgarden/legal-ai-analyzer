@@ -39,6 +39,15 @@ const legalAuthorityStatus = (check: (typeof complianceChecks)[number]) =>
     (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
   )?.citationVerification?.treatmentStatus;
 
+const legalAuthorityForumLabel = (check: (typeof complianceChecks)[number]) => {
+  const verification = check.evidenceAnchors?.find(
+    (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+  )?.citationVerification;
+
+  if (!verification) return undefined;
+  return `${verification.jurisdictionFit.replaceAll("-", " ")} · ${verification.targetForum}`;
+};
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -306,6 +315,11 @@ export default function DashboardPage() {
                           {legalAuthorityStatus(cc) && (
                             <span className="font-medium capitalize text-gray-500">
                               Authority: {legalAuthorityStatus(cc)?.replaceAll("-", " ")}
+                            </span>
+                          )}
+                          {legalAuthorityForumLabel(cc) && (
+                            <span className="font-medium text-gray-500">
+                              Forum fit: {legalAuthorityForumLabel(cc)}
                             </span>
                           )}
                         </div>

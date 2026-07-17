@@ -24,6 +24,12 @@ export type CitationAlignment = "supports-claim" | "needs-counsel-review" | "doe
 
 export type AuthorityStrength = "binding" | "persuasive" | "unsettled";
 
+export type JurisdictionFit =
+  | "controlling"
+  | "persuasive-only"
+  | "forum-mismatch"
+  | "pending-forum-analysis";
+
 export type AuthorityTreatmentStatus =
   | "good-law"
   | "negative-treatment"
@@ -37,6 +43,8 @@ export interface CitationVerification {
   treatmentStatus: AuthorityTreatmentStatus;
   treatmentSource: string;
   jurisdiction: string;
+  targetForum: string;
+  jurisdictionFit: JurisdictionFit;
   checkedAt: string;
   checkedBy: string;
 }

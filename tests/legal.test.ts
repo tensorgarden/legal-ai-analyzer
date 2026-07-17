@@ -182,6 +182,42 @@ describe("evidence verification", () => {
     });
   });
 
+  it("records forum applicability before treating authority as controlling", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+    const validJurisdictionFits = [
+      "controlling",
+      "persuasive-only",
+      "forum-mismatch",
+      "pending-forum-analysis",
+    ];
+
+    expect(legalAuthorities.length).toBeGreaterThan(0);
+    legalAuthorities.forEach((anchor) => {
+      const verification = anchor.citationVerification;
+
+      expect(verification?.targetForum.trim().length).toBeGreaterThan(10);
+      expect(validJurisdictionFits).toContain(verification?.jurisdictionFit);
+    });
+
+    const nonControlling = legalAuthorities.filter(
+      (anchor) => anchor.citationVerification?.jurisdictionFit !== "controlling",
+    );
+    expect(nonControlling.length).toBeGreaterThan(0);
+    nonControlling.forEach((anchor) => {
+      expect(anchor.citationVerification?.alignment).toBe("needs-counsel-review");
+    });
+
+    const controlling = legalAuthorities.filter(
+      (anchor) => anchor.citationVerification?.jurisdictionFit === "controlling",
+    );
+    expect(controlling.length).toBeGreaterThan(0);
+    controlling.forEach((anchor) => {
+      expect(anchor.citationVerification?.authorityStrength).toBe("binding");
+    });
+  });
+
   it("prevents unresolved or negatively treated authority from supporting reliance", () => {
     const unresolvedAuthorities = anchors.filter((anchor) => {
       const status = anchor.citationVerification?.treatmentStatus;
