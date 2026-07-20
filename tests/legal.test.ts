@@ -218,6 +218,60 @@ describe("evidence verification", () => {
     });
   });
 
+  it("records a bounded refresh window for every legal authority", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+    const validFreshnessStatuses = ["current", "refresh-due", "event-watch"];
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+    expect(legalAuthorities.length).toBeGreaterThan(0);
+    legalAuthorities.forEach((anchor) => {
+      const verification = anchor.citationVerification;
+      const checkedAt = Date.parse(verification?.checkedAt ?? "");
+      const refreshDueAt = Date.parse(verification?.refreshDueAt ?? "");
+      const reviewWindowDays = (refreshDueAt - checkedAt) / millisecondsPerDay;
+
+      expect(validFreshnessStatuses).toContain(verification?.freshnessStatus);
+      expect(refreshDueAt).toBeGreaterThan(checkedAt);
+      expect(reviewWindowDays).toBeLessThanOrEqual(92);
+      expect(verification?.refreshReason.trim().length).toBeGreaterThan(40);
+    });
+  });
+
+  it("blocks due or event-watched authority from supporting reliance", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+    const currentAuthorities = legalAuthorities.filter(
+      (anchor) => anchor.citationVerification?.freshnessStatus === "current",
+    );
+    const nonCurrentAuthorities = legalAuthorities.filter(
+      (anchor) => anchor.citationVerification?.freshnessStatus !== "current",
+    );
+
+    expect(currentAuthorities.length).toBeGreaterThan(0);
+    expect(nonCurrentAuthorities.length).toBeGreaterThan(0);
+    nonCurrentAuthorities.forEach((anchor) => {
+      expect(anchor.citationVerification?.alignment).toBe("needs-counsel-review");
+    });
+
+    const unsettledAuthorities = legalAuthorities.filter(
+      (anchor) => anchor.citationVerification?.authorityStrength === "unsettled",
+    );
+    expect(unsettledAuthorities.length).toBeGreaterThan(0);
+    unsettledAuthorities.forEach((anchor) => {
+      const verification = anchor.citationVerification;
+      const reviewWindowDays =
+        (Date.parse(verification?.refreshDueAt ?? "") -
+          Date.parse(verification?.checkedAt ?? "")) /
+        (24 * 60 * 60 * 1000);
+
+      expect(verification?.freshnessStatus).toBe("event-watch");
+      expect(reviewWindowDays).toBeLessThanOrEqual(14);
+    });
+  });
+
   it("prevents unresolved or negatively treated authority from supporting reliance", () => {
     const unresolvedAuthorities = anchors.filter((anchor) => {
       const status = anchor.citationVerification?.treatmentStatus;

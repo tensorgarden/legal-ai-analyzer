@@ -48,6 +48,19 @@ const legalAuthorityForumLabel = (check: (typeof complianceChecks)[number]) => {
   return `${verification.jurisdictionFit.replaceAll("-", " ")} · ${verification.targetForum}`;
 };
 
+const legalAuthorityRefreshLabel = (check: (typeof complianceChecks)[number]) => {
+  const verification = check.evidenceAnchors?.find(
+    (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+  )?.citationVerification;
+
+  if (!verification) return undefined;
+  const dueDate = new Date(verification.refreshDueAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+  return `${verification.freshnessStatus.replaceAll("-", " ")} · due ${dueDate}`;
+};
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -320,6 +333,11 @@ export default function DashboardPage() {
                           {legalAuthorityForumLabel(cc) && (
                             <span className="font-medium text-gray-500">
                               Forum fit: {legalAuthorityForumLabel(cc)}
+                            </span>
+                          )}
+                          {legalAuthorityRefreshLabel(cc) && (
+                            <span className="font-medium text-gray-500">
+                              Authority refresh: {legalAuthorityRefreshLabel(cc)}
                             </span>
                           )}
                         </div>

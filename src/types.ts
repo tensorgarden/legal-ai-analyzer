@@ -36,6 +36,8 @@ export type AuthorityTreatmentStatus =
   | "superseded"
   | "status-pending";
 
+export type AuthorityFreshnessStatus = "current" | "refresh-due" | "event-watch";
+
 export interface CitationVerification {
   exists: boolean;
   alignment: CitationAlignment;
@@ -45,6 +47,9 @@ export interface CitationVerification {
   jurisdiction: string;
   targetForum: string;
   jurisdictionFit: JurisdictionFit;
+  freshnessStatus: AuthorityFreshnessStatus;
+  refreshDueAt: string;
+  refreshReason: string;
   checkedAt: string;
   checkedBy: string;
 }
