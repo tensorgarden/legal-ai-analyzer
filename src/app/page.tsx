@@ -61,6 +61,11 @@ const legalAuthorityRefreshLabel = (check: (typeof complianceChecks)[number]) =>
   return `${verification.freshnessStatus.replaceAll("-", " ")} · due ${dueDate}`;
 };
 
+const legalAuthoritySourceTextLabel = (check: (typeof complianceChecks)[number]) =>
+  check.evidenceAnchors
+    ?.find((anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law")
+    ?.citationVerification?.sourceTextStatus.replaceAll("-", " ");
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -338,6 +343,11 @@ export default function DashboardPage() {
                           {legalAuthorityRefreshLabel(cc) && (
                             <span className="font-medium text-gray-500">
                               Authority refresh: {legalAuthorityRefreshLabel(cc)}
+                            </span>
+                          )}
+                          {legalAuthoritySourceTextLabel(cc) && (
+                            <span className="font-medium text-gray-500">
+                              Source text: {legalAuthoritySourceTextLabel(cc)}
                             </span>
                           )}
                         </div>

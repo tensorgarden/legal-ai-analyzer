@@ -38,10 +38,17 @@ export type AuthorityTreatmentStatus =
 
 export type AuthorityFreshnessStatus = "current" | "refresh-due" | "event-watch";
 
+export type SourceTextVerificationStatus =
+  | "exact-quote-verified"
+  | "paraphrase-verified"
+  | "source-mismatch";
+
 export interface CitationVerification {
   exists: boolean;
   alignment: CitationAlignment;
   authorityStrength: AuthorityStrength;
+  sourceTextStatus: SourceTextVerificationStatus;
+  sourceTextNote: string;
   treatmentStatus: AuthorityTreatmentStatus;
   treatmentSource: string;
   jurisdiction: string;

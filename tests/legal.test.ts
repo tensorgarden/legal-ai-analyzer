@@ -130,6 +130,39 @@ describe("evidence verification", () => {
     });
   });
 
+  it("records source-text verification for every legal authority", () => {
+    const legalAuthorities = anchors.filter(
+      (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
+    );
+    const validSourceTextStatuses = [
+      "exact-quote-verified",
+      "paraphrase-verified",
+      "source-mismatch",
+    ];
+
+    expect(legalAuthorities.length).toBeGreaterThan(0);
+    legalAuthorities.forEach((anchor) => {
+      const verification = anchor.citationVerification;
+
+      expect(validSourceTextStatuses).toContain(verification?.sourceTextStatus);
+      expect(verification?.sourceTextNote.trim().length).toBeGreaterThan(80);
+    });
+  });
+
+  it("blocks source-text mismatches from supporting reliance", () => {
+    const mismatchedAuthorities = anchors.filter(
+      (anchor) => anchor.citationVerification?.sourceTextStatus === "source-mismatch",
+    );
+
+    expect(mismatchedAuthorities.length).toBeGreaterThan(0);
+    mismatchedAuthorities.forEach((anchor) => {
+      expect(anchor.citationVerification?.alignment).toBe("needs-counsel-review");
+      expect(anchor.citationVerification?.sourceTextNote).toMatch(
+        /does not appear verbatim|replace.*verified source text/i,
+      );
+    });
+  });
+
   it("checks citation existence, claim alignment, and authority strength before reliance", () => {
     const legalAuthorities = anchors.filter(
       (anchor) => anchor.referenceType === "statute" || anchor.referenceType === "case-law",
