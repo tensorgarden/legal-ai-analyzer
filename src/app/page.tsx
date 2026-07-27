@@ -7,6 +7,7 @@ import {
   riskAssessment,
   complianceChecks,
   privilegeHandlingReviews,
+  filingReadinessReviews,
   reviewTimeline,
 } from "@/demo-data";
 
@@ -31,6 +32,12 @@ const confidenceVariant = (score: number): "success" | "info" | "warning" => {
 const privilegeDecisionVariant = (decision: string): "success" | "warning" | "high" => {
   if (decision === "approved-private") return "success";
   if (decision === "counsel-review-required") return "warning";
+  return "high";
+};
+
+const filingReadinessVariant = (status: string): "success" | "warning" | "high" => {
+  if (status === "ready") return "success";
+  if (status === "counsel-review") return "warning";
   return "high";
 };
 
@@ -198,6 +205,38 @@ export default function DashboardPage() {
             </table>
           </div>
         </Card>
+      </section>
+
+      {/* ─── External Use Readiness ───────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-1 text-2xl font-bold tracking-tight text-ink">External Use Readiness</h2>
+        <p className="mb-5 text-sm text-gray-500">
+          Human verification gates before AI-assisted work is used in a court filing or client advice
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {filingReadinessReviews.map((review) => {
+            const contract = contracts.find((item) => item.id === review.contractId);
+            return (
+              <Card key={review.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="font-semibold text-ink">{contract?.title ?? review.contractId}</h3>
+                    <p className="mt-1 text-xs capitalize text-gray-500">
+                      Intended use: {review.intendedUse.replaceAll("-", " ")}
+                    </p>
+                  </div>
+                  <Badge variant={filingReadinessVariant(review.status)}>{review.status}</Badge>
+                </div>
+                <p className="mt-3 text-sm text-gray-600">{review.reviewNote}</p>
+                <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-gray-500">
+                  <span>{review.citationsVerified ? "Citations checked" : "Citations open"}</span>
+                  <span>{review.sourceTextVerified ? "Source text checked" : "Source text open"}</span>
+                  <span>{review.independentLegalJudgmentConfirmed ? "Judgment confirmed" : "Judgment open"}</span>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
       </section>
 
       {/* ─── Clause Extraction Table ─────────────────────────────────────────── */}

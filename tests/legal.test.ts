@@ -5,6 +5,7 @@ import {
   riskAssessment,
   complianceChecks,
   privilegeHandlingReviews,
+  filingReadinessReviews,
   reviewTimeline,
   heroMetrics,
 } from "@/demo-data";
@@ -314,6 +315,53 @@ describe("evidence verification", () => {
     expect(unresolvedAuthorities.length).toBeGreaterThan(0);
     unresolvedAuthorities.forEach((anchor) => {
       expect(anchor.citationVerification?.alignment).toBe("needs-counsel-review");
+    });
+  });
+});
+
+describe("external-use filing readiness", () => {
+  it("requires complete human verification before a court filing is ready", () => {
+    const courtFilings = filingReadinessReviews.filter((review) => review.intendedUse === "court-filing");
+    const readyFilings = courtFilings.filter((review) => review.status === "ready");
+
+    expect(courtFilings.length).toBeGreaterThanOrEqual(2);
+    expect(readyFilings.length).toBeGreaterThan(0);
+    readyFilings.forEach((review) => {
+      expect(review.citationsVerified).toBe(true);
+      expect(review.sourceTextVerified).toBe(true);
+      expect(review.independentLegalJudgmentConfirmed).toBe(true);
+      expect(review.reviewedBy?.trim().length).toBeGreaterThan(2);
+      expect(Date.parse(review.reviewedAt ?? "")).not.toBeNaN();
+    });
+  });
+
+  it("blocks filing use when cited authority has unresolved verification risks", () => {
+    const unresolvedContractIds = new Set(
+      complianceChecks
+        .filter((check) =>
+          check.evidenceAnchors?.some((anchor) => {
+            const verification = anchor.citationVerification;
+            return Boolean(
+              verification &&
+                (verification.sourceTextStatus === "source-mismatch" ||
+                  verification.alignment !== "supports-claim" ||
+                  verification.treatmentStatus !== "good-law" ||
+                  verification.jurisdictionFit !== "controlling" ||
+                  verification.freshnessStatus !== "current"),
+            );
+          }),
+        )
+        .map((check) => check.contractId),
+    );
+    const affectedFilingReviews = filingReadinessReviews.filter(
+      (review) => review.intendedUse === "court-filing" && unresolvedContractIds.has(review.contractId),
+    );
+
+    expect(unresolvedContractIds.size).toBeGreaterThan(0);
+    expect(affectedFilingReviews.length).toBeGreaterThan(0);
+    affectedFilingReviews.forEach((review) => {
+      expect(review.status).toBe("blocked");
+      expect(review.reviewNote).toMatch(/blocked|must replace|re-evaluate/i);
     });
   });
 });

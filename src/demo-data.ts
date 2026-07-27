@@ -5,6 +5,7 @@ import type {
   ComplianceCheck,
   ReviewTimelineEvent,
   PrivilegeHandlingReview,
+  FilingReadinessReview,
 } from "@/types";
 
 // ─── 8 Contracts ─────────────────────────────────────────────────────────────────
@@ -538,6 +539,35 @@ export const complianceChecks: ComplianceCheck[] = [
     lastChecked: "2026-06-08T10:00:00Z",
     confidenceScore: 0.95,
     confidenceRationale: "NDA text matches DTSA reasonable-measures criteria with straightforward confidential-information handling and no authority conflict.",
+  },
+];
+
+// ─── External-Use Filing Readiness ────────────────────────────────────────────────
+
+export const filingReadinessReviews: FilingReadinessReview[] = [
+  {
+    id: "frr-001",
+    contractId: "ctr-002",
+    intendedUse: "court-filing",
+    status: "ready",
+    citationsVerified: true,
+    sourceTextVerified: true,
+    independentLegalJudgmentConfirmed: true,
+    reviewedBy: "Maya Gupta",
+    reviewedAt: "2026-06-10T16:30:00Z",
+    reviewNote: "Counsel independently checked each cited authority, source-text characterization, and filing conclusion before approving external use.",
+  },
+  {
+    id: "frr-002",
+    contractId: "ctr-003",
+    intendedUse: "court-filing",
+    status: "blocked",
+    citationsVerified: true,
+    sourceTextVerified: false,
+    independentLegalJudgmentConfirmed: false,
+    reviewedBy: null,
+    reviewedAt: null,
+    reviewNote: "Blocked because the FTC authority contains a source-text mismatch and unsettled treatment; counsel must replace the wording and re-evaluate the filing conclusion.",
   },
 ];
 

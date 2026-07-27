@@ -128,6 +128,21 @@ export interface PrivilegeHandlingReview {
   handlingNote: string;
 }
 
+export type FilingReadinessStatus = "ready" | "blocked" | "counsel-review";
+
+export interface FilingReadinessReview {
+  id: string;
+  contractId: string;
+  intendedUse: "court-filing" | "client-advice";
+  status: FilingReadinessStatus;
+  citationsVerified: boolean;
+  sourceTextVerified: boolean;
+  independentLegalJudgmentConfirmed: boolean;
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  reviewNote: string;
+}
+
 export interface ComplianceCheck {
   id: string;
   contractId: string;
