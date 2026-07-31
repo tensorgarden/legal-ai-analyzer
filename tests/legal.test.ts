@@ -455,6 +455,45 @@ describe("privilege and AI data handling", () => {
     });
   });
 
+  it("records matter-specific client-consent decisions before AI processing", () => {
+    const validConsentStatuses = [
+      "specific-consent-documented",
+      "risk-reviewed-not-required",
+      "missing",
+    ];
+    const documentedConsent = privilegeHandlingReviews.filter(
+      (review) => review.clientConsentStatus === "specific-consent-documented",
+    );
+    const missingConsent = privilegeHandlingReviews.filter(
+      (review) => review.clientConsentStatus === "missing",
+    );
+
+    expect(documentedConsent.length).toBeGreaterThan(0);
+    expect(missingConsent.length).toBeGreaterThan(0);
+    privilegeHandlingReviews.forEach((review) => {
+      expect(validConsentStatuses).toContain(review.clientConsentStatus);
+      expect(review.clientConsentBasis.trim().length).toBeGreaterThan(100);
+
+      if (review.clientConsentStatus === "specific-consent-documented") {
+        expect(Date.parse(review.clientConsentRecordedAt ?? "")).not.toBeNaN();
+        expect(review.clientConsentBasis).toMatch(/client|matter|contract/i);
+        expect(review.clientConsentBasis).toMatch(/risk|disclosure/i);
+        expect(review.clientConsentBasis).toMatch(/benefit|review/i);
+      }
+
+      if (review.clientConsentStatus === "risk-reviewed-not-required") {
+        expect(review.requestedEnvironment).not.toBe("public-ai");
+        expect(review.providerTrainingOptOut).toBe(true);
+        expect(review.retentionDays ?? 31).toBeLessThanOrEqual(30);
+      }
+
+      if (review.clientConsentStatus === "missing") {
+        expect(review.clientConsentRecordedAt).toBeNull();
+        expect(review.decision).not.toBe("approved-private");
+      }
+    });
+  });
+
   it("keeps potentially privileged material private and counsel-directed", () => {
     const potentiallyPrivileged = privilegeHandlingReviews.filter(
       (review) => review.sensitivity === "potentially-privileged",

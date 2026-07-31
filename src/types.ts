@@ -114,6 +114,11 @@ export type AIProcessingDecision =
   | "counsel-review-required"
   | "blocked-public-tool";
 
+export type ClientConsentStatus =
+  | "specific-consent-documented"
+  | "risk-reviewed-not-required"
+  | "missing";
+
 export interface PrivilegeHandlingReview {
   id: string;
   contractId: string;
@@ -123,6 +128,9 @@ export interface PrivilegeHandlingReview {
   providerTrainingOptOut: boolean;
   retentionDays: number | null;
   counselDirected: boolean;
+  clientConsentStatus: ClientConsentStatus;
+  clientConsentRecordedAt: string | null;
+  clientConsentBasis: string;
   reviewedBy: string;
   reviewedAt: string;
   handlingNote: string;

@@ -197,6 +197,13 @@ export default function DashboardPage() {
                       <td className="px-5 py-3.5 text-xs text-gray-600">
                         <div className="font-medium text-gray-700">{review.reviewedBy}</div>
                         <div>{review.providerTrainingOptOut ? "Training disabled" : "Training control missing"}</div>
+                        <div className={review.clientConsentStatus === "missing" ? "font-medium text-red-700" : "text-gray-500"}>
+                          {review.clientConsentStatus === "specific-consent-documented"
+                            ? "Specific client consent documented"
+                            : review.clientConsentStatus === "risk-reviewed-not-required"
+                              ? "Consent risk review documented"
+                              : "Client consent missing"}
+                        </div>
                       </td>
                     </tr>
                   );
