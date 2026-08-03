@@ -138,10 +138,19 @@ export interface PrivilegeHandlingReview {
 
 export type FilingReadinessStatus = "ready" | "blocked" | "counsel-review";
 
+export type CourtAIDisclosureStatus =
+  | "required-complete"
+  | "not-required-confirmed"
+  | "pending-local-rule-check";
+
 export interface FilingReadinessReview {
   id: string;
   contractId: string;
   intendedUse: "court-filing" | "client-advice";
+  targetCourt: string;
+  courtAIDisclosureStatus: CourtAIDisclosureStatus;
+  courtAIDisclosureSource: string;
+  courtAIDisclosureCheckedAt: string | null;
   status: FilingReadinessStatus;
   citationsVerified: boolean;
   sourceTextVerified: boolean;

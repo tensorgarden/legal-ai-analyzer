@@ -231,14 +231,22 @@ export default function DashboardPage() {
                     <p className="mt-1 text-xs capitalize text-gray-500">
                       Intended use: {review.intendedUse.replaceAll("-", " ")}
                     </p>
+                    <p className="mt-1 text-xs text-gray-500">Target court: {review.targetCourt}</p>
                   </div>
                   <Badge variant={filingReadinessVariant(review.status)}>{review.status}</Badge>
                 </div>
                 <p className="mt-3 text-sm text-gray-600">{review.reviewNote}</p>
-                <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-gray-500">
+                <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-500 sm:grid-cols-4">
                   <span>{review.citationsVerified ? "Citations checked" : "Citations open"}</span>
                   <span>{review.sourceTextVerified ? "Source text checked" : "Source text open"}</span>
                   <span>{review.independentLegalJudgmentConfirmed ? "Judgment confirmed" : "Judgment open"}</span>
+                  <span className={review.courtAIDisclosureStatus === "pending-local-rule-check" ? "font-medium text-red-700" : ""}>
+                    {review.courtAIDisclosureStatus === "required-complete"
+                      ? "AI certificate complete"
+                      : review.courtAIDisclosureStatus === "not-required-confirmed"
+                        ? "No AI certificate required"
+                        : "Court AI rule check open"}
+                  </span>
                 </div>
               </Card>
             );

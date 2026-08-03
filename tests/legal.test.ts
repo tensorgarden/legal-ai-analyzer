@@ -330,8 +330,45 @@ describe("external-use filing readiness", () => {
       expect(review.citationsVerified).toBe(true);
       expect(review.sourceTextVerified).toBe(true);
       expect(review.independentLegalJudgmentConfirmed).toBe(true);
+      expect(review.courtAIDisclosureStatus).not.toBe("pending-local-rule-check");
+      expect(Date.parse(review.courtAIDisclosureCheckedAt ?? "")).not.toBeNaN();
       expect(review.reviewedBy?.trim().length).toBeGreaterThan(2);
       expect(Date.parse(review.reviewedAt ?? "")).not.toBeNaN();
+    });
+  });
+
+  it("requires a forum-specific AI disclosure check before filing readiness", () => {
+    const courtFilings = filingReadinessReviews.filter((review) => review.intendedUse === "court-filing");
+    const completedDisclosureChecks = courtFilings.filter(
+      (review) => review.courtAIDisclosureStatus === "required-complete",
+    );
+    const pendingDisclosureChecks = courtFilings.filter(
+      (review) => review.courtAIDisclosureStatus === "pending-local-rule-check",
+    );
+    const validDisclosureStatuses = [
+      "required-complete",
+      "not-required-confirmed",
+      "pending-local-rule-check",
+    ];
+
+    expect(completedDisclosureChecks.length).toBeGreaterThan(0);
+    expect(pendingDisclosureChecks.length).toBeGreaterThan(0);
+    courtFilings.forEach((review) => {
+      expect(review.targetCourt.trim().length).toBeGreaterThan(20);
+      expect(validDisclosureStatuses).toContain(review.courtAIDisclosureStatus);
+      expect(review.courtAIDisclosureSource.trim().length).toBeGreaterThan(80);
+
+      if (review.courtAIDisclosureStatus === "pending-local-rule-check") {
+        expect(review.status).not.toBe("ready");
+        expect(review.courtAIDisclosureCheckedAt).toBeNull();
+        expect(review.courtAIDisclosureSource).toMatch(/local rules|standing orders|assigned-judge/i);
+      } else {
+        expect(Date.parse(review.courtAIDisclosureCheckedAt ?? "")).not.toBeNaN();
+      }
+
+      if (review.courtAIDisclosureStatus === "required-complete") {
+        expect(review.courtAIDisclosureSource).toMatch(/certificate|certification/i);
+      }
     });
   });
 
