@@ -6,6 +6,7 @@ import type {
   ReviewTimelineEvent,
   PrivilegeHandlingReview,
   FilingReadinessReview,
+  WorkProductReadinessReview,
 } from "@/types";
 
 // ─── 8 Contracts ─────────────────────────────────────────────────────────────────
@@ -629,6 +630,53 @@ export const privilegeHandlingReviews: PrivilegeHandlingReview[] = [
     reviewedBy: "David Park",
     reviewedAt: "2026-06-06T11:30:00Z",
     handlingNote: "Blocked because the requested public tool did not provide acceptable training or retention controls; reroute to the approved private workspace.",
+  },
+];
+
+// ─── Work Product and Discoverability Readiness ─────────────────────────────────
+
+export const workProductReadinessReviews: WorkProductReadinessReview[] = [
+  {
+    id: "wpr-001",
+    contractId: "ctr-002",
+    anticipationStatus: "anticipation-documented",
+    preparedAtCounselDirection: true,
+    counselDirectionSource: "Maya Gupta directed the AI-assisted review on 2026-06-02 in anticipation of the RetailMax dispute; her direction memo scopes the permitted analysis workflow.",
+    protectiveOrderTermsStatus: "closed-tool-required-and-honored",
+    protectiveOrderTermsNote: "The draft protective order bars open-loop AI uploads, and the review ran only in the zero-retention enterprise-private workspace, so no open tool received matter data.",
+    aiProcessingEnvironment: "enterprise-private",
+    status: "work-product-asserted",
+    reviewedBy: "Maya Gupta",
+    reviewedAt: "2026-06-03T10:15:00Z",
+    readinessNote: "Counsel confirmed the review materials were prepared at her direction in anticipation of litigation and stayed inside a closed environment, so work-product protection is asserted over the AI review record.",
+  },
+  {
+    id: "wpr-002",
+    contractId: "ctr-004",
+    anticipationStatus: "anticipation-documented",
+    preparedAtCounselDirection: false,
+    counselDirectionSource: "Procurement ran the AI review on its own initiative before engaging counsel; no attorney directed or supervised the analysis workflow.",
+    protectiveOrderTermsStatus: "no-restriction-confirmed",
+    protectiveOrderTermsNote: "No protective order is in place for the GlobalParts dispute, but the absence of counsel direction leaves the AI review record exposed under the by-or-at-the-behest-of-counsel standard.",
+    aiProcessingEnvironment: "enterprise-private",
+    status: "potentially-discoverable",
+    reviewedBy: "David Park",
+    reviewedAt: "2026-06-05T15:10:00Z",
+    readinessNote: "Because the review was not prepared by or at the behest of counsel, work-product protection cannot be asserted; treat prompts and outputs as potentially discoverable and route future analysis through counsel direction.",
+  },
+  {
+    id: "wpr-003",
+    contractId: "ctr-005",
+    anticipationStatus: "pending-counsel-assessment",
+    preparedAtCounselDirection: true,
+    counselDirectionSource: "Counsel direction is documented for the DevTool Pro audit dispute, but litigation counsel has not yet assessed whether the review materials qualify as work product.",
+    protectiveOrderTermsStatus: "pending-protective-order-check",
+    protectiveOrderTermsNote: "The parties are still negotiating AI terms in the protective order; until closed-tool terms are confirmed, the AI processing environment remains unresolved for discovery purposes.",
+    aiProcessingEnvironment: "local-sandbox",
+    status: "counsel-review-required",
+    reviewedBy: null,
+    reviewedAt: null,
+    readinessNote: "Held for litigation counsel: confirm anticipation status and protective-order AI terms before anyone relies on work-product protection for this review record.",
   },
 ];
 

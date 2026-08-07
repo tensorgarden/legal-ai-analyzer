@@ -8,6 +8,7 @@ import {
   complianceChecks,
   privilegeHandlingReviews,
   filingReadinessReviews,
+  workProductReadinessReviews,
   reviewTimeline,
 } from "@/demo-data";
 
@@ -38,6 +39,12 @@ const privilegeDecisionVariant = (decision: string): "success" | "warning" | "hi
 const filingReadinessVariant = (status: string): "success" | "warning" | "high" => {
   if (status === "ready") return "success";
   if (status === "counsel-review") return "warning";
+  return "high";
+};
+
+const workProductStatusVariant = (status: string): "success" | "warning" | "high" => {
+  if (status === "work-product-asserted") return "success";
+  if (status === "potentially-discoverable") return "warning";
   return "high";
 };
 
@@ -204,6 +211,81 @@ export default function DashboardPage() {
                               ? "Consent risk review documented"
                               : "Client consent missing"}
                         </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </section>
+
+      {/* ─── Work Product & Discoverability ───────────────────────────────────── */}
+      <section>
+        <h2 className="mb-1 text-2xl font-bold tracking-tight text-ink">Work Product &amp; Discoverability</h2>
+        <p className="mb-5 text-sm text-gray-500">
+          Whether AI-assisted review materials qualify for work-product protection before discovery exposure
+        </p>
+        <Card className="overflow-hidden !p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-gray-100 bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <tr>
+                  <th className="px-5 py-3">Contract</th>
+                  <th className="px-5 py-3">Counsel direction</th>
+                  <th className="px-5 py-3">Protective order</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3">Review</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {workProductReadinessReviews.map((review) => {
+                  const contract = contracts.find((item) => item.id === review.contractId);
+                  return (
+                    <tr key={review.id} className="transition-colors hover:bg-gray-50">
+                      <td className="px-5 py-3.5">
+                        <div className="font-medium text-ink">{contract?.title ?? review.contractId}</div>
+                        <p className="mt-1 max-w-xl text-xs text-gray-500">{review.readinessNote}</p>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <Badge variant={review.preparedAtCounselDirection ? "success" : "high"}>
+                          {review.preparedAtCounselDirection ? "counsel directed" : "no counsel direction"}
+                        </Badge>
+                        <div className="mt-1 text-xs capitalize text-gray-500">
+                          {review.anticipationStatus.replaceAll("-", " ")}
+                        </div>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <Badge
+                          variant={
+                            review.protectiveOrderTermsStatus === "pending-protective-order-check"
+                              ? "high"
+                              : "info"
+                          }
+                        >
+                          {review.protectiveOrderTermsStatus.replaceAll("-", " ")}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <Badge variant={workProductStatusVariant(review.status)}>
+                          {review.status.replaceAll("-", " ")}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3.5 text-xs text-gray-600">
+                        {review.reviewedBy ? (
+                          <>
+                            <div className="font-medium text-gray-700">{review.reviewedBy}</div>
+                            <div>
+                              {new Date(review.reviewedAt ?? "").toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </div>
+                          </>
+                        ) : (
+                          <span className="font-medium text-red-700">Counsel review open</span>
+                        )}
                       </td>
                     </tr>
                   );

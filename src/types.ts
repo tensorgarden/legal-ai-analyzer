@@ -160,6 +160,36 @@ export interface FilingReadinessReview {
   reviewNote: string;
 }
 
+export type LitigationAnticipationStatus =
+  | "anticipation-documented"
+  | "not-litigation-context"
+  | "pending-counsel-assessment";
+
+export type ProtectiveOrderAITermsStatus =
+  | "closed-tool-required-and-honored"
+  | "no-restriction-confirmed"
+  | "pending-protective-order-check";
+
+export type WorkProductReadinessStatus =
+  | "work-product-asserted"
+  | "potentially-discoverable"
+  | "counsel-review-required";
+
+export interface WorkProductReadinessReview {
+  id: string;
+  contractId: string;
+  anticipationStatus: LitigationAnticipationStatus;
+  preparedAtCounselDirection: boolean;
+  counselDirectionSource: string;
+  protectiveOrderTermsStatus: ProtectiveOrderAITermsStatus;
+  protectiveOrderTermsNote: string;
+  aiProcessingEnvironment: AIProcessingEnvironment;
+  status: WorkProductReadinessStatus;
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  readinessNote: string;
+}
+
 export interface ComplianceCheck {
   id: string;
   contractId: string;

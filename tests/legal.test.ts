@@ -6,6 +6,7 @@ import {
   complianceChecks,
   privilegeHandlingReviews,
   filingReadinessReviews,
+  workProductReadinessReviews,
   reviewTimeline,
   heroMetrics,
 } from "@/demo-data";
@@ -591,5 +592,98 @@ describe("heroMetrics", () => {
     expect(heroMetrics.contractsReviewed).toBe(contracts.length);
     const highRiskClauses = clauses.filter((cl: Clause) => cl.riskLevel === "high");
     expect(heroMetrics.highRiskClauses).toBe(highRiskClauses.length);
+  });
+});
+
+describe("work product and discoverability readiness", () => {
+  const validAnticipationStatuses = [
+    "anticipation-documented",
+    "not-litigation-context",
+    "pending-counsel-assessment",
+  ];
+  const validProtectiveOrderStatuses = [
+    "closed-tool-required-and-honored",
+    "no-restriction-confirmed",
+    "pending-protective-order-check",
+  ];
+  const validReadinessStatuses = [
+    "work-product-asserted",
+    "potentially-discoverable",
+    "counsel-review-required",
+  ];
+
+  it("records accountable readiness reviews for known contracts", () => {
+    const knownContractIds = new Set(contracts.map((contract) => contract.id));
+
+    expect(workProductReadinessReviews.length).toBeGreaterThanOrEqual(3);
+    workProductReadinessReviews.forEach((review) => {
+      expect(knownContractIds.has(review.contractId)).toBe(true);
+      expect(validAnticipationStatuses).toContain(review.anticipationStatus);
+      expect(validProtectiveOrderStatuses).toContain(review.protectiveOrderTermsStatus);
+      expect(validReadinessStatuses).toContain(review.status);
+      expect(review.counselDirectionSource.trim().length).toBeGreaterThan(80);
+      expect(review.protectiveOrderTermsNote.trim().length).toBeGreaterThan(80);
+      expect(review.readinessNote.trim().length).toBeGreaterThan(80);
+    });
+  });
+
+  it("asserts work product only for counsel-directed closed-environment review", () => {
+    const asserted = workProductReadinessReviews.filter(
+      (review) => review.status === "work-product-asserted",
+    );
+
+    expect(asserted.length).toBeGreaterThan(0);
+    asserted.forEach((review) => {
+      expect(review.anticipationStatus).toBe("anticipation-documented");
+      expect(review.preparedAtCounselDirection).toBe(true);
+      expect(review.aiProcessingEnvironment).not.toBe("public-ai");
+      expect(review.protectiveOrderTermsStatus).not.toBe("pending-protective-order-check");
+      expect(review.reviewedBy?.trim().length).toBeGreaterThan(2);
+      expect(review.reviewedBy).not.toMatch(/legal ai|model|automation/i);
+      expect(Date.parse(review.reviewedAt ?? "")).not.toBeNaN();
+    });
+  });
+
+  it("aligns work-product assertions with approved private AI handling", () => {
+    const approvedPrivateContractIds = new Set(
+      privilegeHandlingReviews
+        .filter((review) => review.decision === "approved-private")
+        .map((review) => review.contractId),
+    );
+    const asserted = workProductReadinessReviews.filter(
+      (review) => review.status === "work-product-asserted",
+    );
+
+    expect(asserted.length).toBeGreaterThan(0);
+    asserted.forEach((review) => {
+      expect(approvedPrivateContractIds.has(review.contractId)).toBe(true);
+    });
+  });
+
+  it("blocks work-product assertion without counsel direction or settled protective-order terms", () => {
+    const nonAsserted = workProductReadinessReviews.filter(
+      (review) => review.status !== "work-product-asserted",
+    );
+    const withoutCounselDirection = workProductReadinessReviews.filter(
+      (review) => !review.preparedAtCounselDirection,
+    );
+    const pendingProtectiveOrder = workProductReadinessReviews.filter(
+      (review) => review.protectiveOrderTermsStatus === "pending-protective-order-check",
+    );
+
+    expect(nonAsserted.length).toBeGreaterThan(0);
+    expect(withoutCounselDirection.length).toBeGreaterThan(0);
+    expect(pendingProtectiveOrder.length).toBeGreaterThan(0);
+
+    withoutCounselDirection.forEach((review) => {
+      expect(review.status).not.toBe("work-product-asserted");
+      expect(review.readinessNote).toMatch(/behest of counsel|counsel direction/i);
+    });
+
+    pendingProtectiveOrder.forEach((review) => {
+      expect(review.status).not.toBe("work-product-asserted");
+      expect(review.reviewedBy).toBeNull();
+      expect(review.protectiveOrderTermsNote).toMatch(/protective order/i);
+    });
   });
 });
