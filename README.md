@@ -67,6 +67,18 @@ The dashboard ships with realistic demo data:
 - **10 compliance checks** against GDPR, CCPA, FTC, DTSA, UCC, and state employment laws
 - **21 timeline events** showing a full review workflow
 
+## Screenshots
+
+| Section | Description |
+|---------|-------------|
+| ![Overview Stats](docs/screenshots/01-overview-stats.png) | Overview section with contract metrics and trends |
+| ![Review Queue](docs/screenshots/02-review-queue.png) | Review queue with contracts awaiting review |
+| ![Privilege & AI Handling](docs/screenshots/03-privilege-ai-handling.png) | Privilege & AI handling table with sensitivity and handling decisions |
+| ![Work Product & Discoverability](docs/screenshots/04-work-product-discoverability.png) | Work product and discoverability status dashboard |
+| ![External Use Readiness](docs/screenshots/05-external-use-readiness.png) | External use readiness cards for filing and court usage |
+| ![Extracted Clauses](docs/screenshots/06-extracted-clauses.png) | Extracted clauses table with risk scores |
+| ![Full Page](docs/screenshots/00-full-page.png) | Full-page portfolio demo screenshot |
+
 ## License
 
 Private. All rights reserved.
