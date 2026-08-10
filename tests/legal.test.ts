@@ -9,6 +9,8 @@ import {
   workProductReadinessReviews,
   reviewTimeline,
   heroMetrics,
+  playbookRules,
+  playbookChecks,
 } from "@/demo-data";
 import type { Contract, Clause, RiskAssessment, ComplianceCheck, ReviewTimelineEvent } from "@/types";
 
@@ -685,5 +687,81 @@ describe("work product and discoverability readiness", () => {
       expect(review.reviewedBy).toBeNull();
       expect(review.protectiveOrderTermsNote).toMatch(/protective order/i);
     });
+  });
+});
+
+describe("playbook enforcement", () => {
+  it("every playbook rule has a unique ID and a substantive expected pattern", () => {
+    const ruleIds = playbookRules.map((rule) => rule.id);
+    const uniqueRuleIds = new Set(ruleIds);
+
+    expect(playbookRules.length).toBeGreaterThanOrEqual(8);
+    expect(uniqueRuleIds.size).toBe(playbookRules.length);
+    playbookRules.forEach((rule) => {
+      expect(rule.rule.trim().length).toBeGreaterThan(60);
+      expect(rule.expectedPattern.trim().length).toBeGreaterThan(10);
+      expect(rule.remediationGuidance.trim().length).toBeGreaterThan(60);
+      expect(["critical", "important", "advisory"]).toContain(rule.severity);
+    });
+  });
+
+  it("every playbook check references a known rule and contract", () => {
+    const knownRuleIds = new Set(playbookRules.map((rule) => rule.id));
+    const knownContractIds = new Set(contracts.map((contract) => contract.id));
+
+    expect(playbookChecks.length).toBeGreaterThanOrEqual(10);
+    playbookChecks.forEach((check) => {
+      expect(knownRuleIds.has(check.ruleId)).toBe(true);
+      expect(knownContractIds.has(check.contractId)).toBe(true);
+      expect(check.evidence.trim().length).toBeGreaterThan(40);
+      expect(["pass", "fail", "partial"]).toContain(check.status);
+      expect(Date.parse(check.checkedAt)).not.toBeNaN();
+      expect(check.checkedBy.trim().length).toBeGreaterThan(2);
+      expect(check.checkedBy).not.toMatch(/legal ai|model|automation/i);
+    });
+  });
+
+  it("every critical rule that has a failing check routes to a named human reviewer", () => {
+    const criticalRuleIds = new Set(
+      playbookRules.filter((rule) => rule.severity === "critical").map((rule) => rule.id),
+    );
+    const failingCriticalChecks = playbookChecks.filter(
+      (check) => check.status === "fail" && criticalRuleIds.has(check.ruleId),
+    );
+
+    expect(failingCriticalChecks.length).toBeGreaterThan(0);
+    failingCriticalChecks.forEach((check) => {
+      expect(check.checkedBy.trim().length).toBeGreaterThan(2);
+      expect(check.checkedBy).not.toMatch(/legal ai|model|automation/i);
+    });
+  });
+
+  it("every playbook rule covers a known clause category", () => {
+    const knownCategories = [
+      "termination",
+      "liability",
+      "indemnification",
+      "confidentiality",
+      "payment",
+      "ip-rights",
+      "non-compete",
+      "governing-law",
+      "dispute-resolution",
+      "data-privacy",
+      "force-majeure",
+      "assignment",
+    ];
+
+    playbookRules.forEach((rule) => {
+      expect(knownCategories).toContain(rule.category);
+    });
+  });
+
+  it("has both passing and failing playbook checks across the portfolio", () => {
+    const passes = playbookChecks.filter((check) => check.status === "pass");
+    const fails = playbookChecks.filter((check) => check.status === "fail");
+
+    expect(passes.length).toBeGreaterThan(0);
+    expect(fails.length).toBeGreaterThan(0);
   });
 });

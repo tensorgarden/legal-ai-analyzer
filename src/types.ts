@@ -227,6 +227,25 @@ export interface LegalDocument {
   fileSize: number; // bytes
 }
 
+export interface PlaybookRule {
+  id: string;
+  category: ClauseCategory;
+  rule: string;
+  severity: "critical" | "important" | "advisory";
+  expectedPattern: string;
+  remediationGuidance: string;
+}
+
+export interface PlaybookCheck {
+  id: string;
+  ruleId: string;
+  contractId: string;
+  status: "pass" | "fail" | "partial";
+  evidence: string;
+  checkedAt: string;
+  checkedBy: string;
+}
+
 export interface ReviewTimelineEvent {
   id: string;
   contractId: string;
