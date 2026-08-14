@@ -245,6 +245,22 @@ export interface PlaybookCheck {
   checkedAt: string;
   checkedBy: string;
 }
+export type DraftingIntegrityCheckType = "defined-term" | "cross-reference";
+
+export type DraftingIntegrityStatus = "pass" | "fail" | "review-required";
+
+export interface DraftingIntegrityCheck {
+  id: string;
+  contractId: string;
+  checkType: DraftingIntegrityCheckType;
+  finding: string;
+  targetLocator: string;
+  status: DraftingIntegrityStatus;
+  evidenceAnchors: EvidenceAnchor[];
+  recommendedAction: string;
+  checkedAt: string;
+  checkedBy: string;
+}
 
 export interface ReviewTimelineEvent {
   id: string;

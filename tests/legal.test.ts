@@ -11,6 +11,7 @@ import {
   heroMetrics,
   playbookRules,
   playbookChecks,
+  draftingIntegrityChecks,
 } from "@/demo-data";
 import type { Contract, Clause, RiskAssessment, ComplianceCheck, ReviewTimelineEvent } from "@/types";
 
@@ -763,5 +764,77 @@ describe("playbook enforcement", () => {
 
     expect(passes.length).toBeGreaterThan(0);
     expect(fails.length).toBeGreaterThan(0);
+  });
+});
+
+
+
+describe("drafting integrity checks", () => {
+  it("covers defined-term and cross-reference drift across multiple contracts", () => {
+    const knownContractIds = new Set(contracts.map((contract) => contract.id));
+
+    expect(draftingIntegrityChecks.length).toBeGreaterThanOrEqual(6);
+    expect(draftingIntegrityChecks.map((check) => check.checkType)).toContain("defined-term");
+    expect(draftingIntegrityChecks.map((check) => check.checkType)).toContain("cross-reference");
+
+    draftingIntegrityChecks.forEach((check) => {
+      expect(knownContractIds.has(check.contractId)).toBe(true);
+      expect(["pass", "fail", "review-required"]).toContain(check.status);
+      expect(check.finding.trim().length).toBeGreaterThan(60);
+      expect(check.targetLocator.trim().length).toBeGreaterThan(2);
+      expect(check.recommendedAction.trim().length).toBeGreaterThan(40);
+      expect(Date.parse(check.checkedAt)).not.toBeNaN();
+      expect(check.checkedBy.trim().length).toBeGreaterThan(2);
+      expect(check.checkedBy).not.toMatch(/legal ai|model|automation/i);
+    });
+  });
+
+  it("anchors every non-passing structural finding to verified contract text", () => {
+    const nonPassing = draftingIntegrityChecks.filter((check) => check.status !== "pass");
+
+    expect(nonPassing.length).toBeGreaterThan(0);
+    nonPassing.forEach((check) => {
+      expect(check.evidenceAnchors.length).toBeGreaterThanOrEqual(1);
+      check.evidenceAnchors.forEach((anchor) => {
+        expect(anchor.referenceType).toBe("contract-section");
+        expect(anchor.verificationMethod).toBe("contract-text-match");
+        expect((anchor.sourceLocator ?? "").trim().length).toBeGreaterThan(0);
+        expect((anchor.supportingExcerpt ?? "").trim().length).toBeGreaterThan(60);
+        expect((anchor.verifiedBy ?? "").trim().length).toBeGreaterThan(2);
+        expect(anchor.verifiedBy).not.toMatch(/legal ai|model|automation/i);
+        expect(Date.parse(anchor.verifiedAt)).not.toBeNaN();
+      });
+    });
+  });
+
+  it("proves dangling cross-references point past the contract's actual section count", () => {
+    const nda = contracts.find((contract) => contract.id === "ctr-001");
+    const dangling = draftingIntegrityChecks.filter(
+      (check) =>
+        check.contractId === "ctr-001" &&
+        check.checkType === "cross-reference" &&
+        check.status === "fail",
+    );
+
+    expect(nda).toBeDefined();
+    const clauseCount = nda ? nda.clauseCount : 0;
+    expect(dangling.length).toBeGreaterThan(0);
+    dangling.forEach((check) => {
+      const references = check.finding.match(/Section (\d+(?:\.\d+)?)/g) ?? [];
+      expect(references.length).toBeGreaterThan(0);
+      references.forEach((reference) => {
+        const sectionNumber = Number(reference.replace("Section ", "").split(".")[0]);
+        expect(sectionNumber).toBeGreaterThan(clauseCount);
+      });
+    });
+  });
+
+  it("reserves pass status for checks whose referenced targets actually resolve", () => {
+    const passing = draftingIntegrityChecks.filter((check) => check.status === "pass");
+
+    expect(passing.length).toBeGreaterThan(0);
+    passing.forEach((check) => {
+      expect(check.recommendedAction).toMatch(/no action|none required|verified|confirmed/i);
+    });
   });
 });

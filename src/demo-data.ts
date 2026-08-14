@@ -9,6 +9,7 @@ import type {
   WorkProductReadinessReview,
   PlaybookRule,
   PlaybookCheck,
+  DraftingIntegrityCheck,
 } from "@/types";
 
 // ─── 8 Contracts ─────────────────────────────────────────────────────────────────
@@ -950,6 +951,178 @@ export const playbookChecks: PlaybookCheck[] = [
     status: "pass",
     evidence: "FinServe NDA §6 provides 5-year post-termination survival, exceeding the firm's 3-year minimum standard.",
     checkedAt: "2026-06-08T10:00:00Z",
+    checkedBy: "David Park",
+  },
+];
+
+// ─── Drafting Integrity Checks ─────────────────────────────────────────────────────
+
+export const draftingIntegrityChecks: DraftingIntegrityCheck[] = [
+  {
+    id: "dic-001",
+    contractId: "ctr-001",
+    checkType: "cross-reference",
+    finding:
+      "Notice clause §7.2 requires delivery pursuant to Section 9.2, but the agreement contains only eight sections and no Section 9.2 exists anywhere in the executed text.",
+    targetLocator: "§7.2 → Section 9.2",
+    status: "fail",
+    evidenceAnchors: [
+      {
+        label: "Dangling notice cross-reference",
+        source: "ctr-001 §7.2",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-01T09:42:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Sarah Chen",
+        sourceLocator: "§7.2",
+        supportingExcerpt:
+          "All notices required or permitted under this Agreement shall be given in writing and delivered pursuant to Section 9.2 of this Agreement. Any notice not delivered in accordance with Section 9.2 shall be deemed ineffective.",
+      },
+    ],
+    recommendedAction:
+      "Re-point the notice provision to the existing notices section (§7) or insert the missing Section 9.2 before execution.",
+    checkedAt: "2026-06-01T09:42:00Z",
+    checkedBy: "Sarah Chen",
+  },
+  {
+    id: "dic-002",
+    contractId: "ctr-002",
+    checkType: "defined-term",
+    finding:
+      "Capitalized term Service Level Credits appears in §5.2 and §11.3, but no definition exists anywhere in the agreement, leaving the credit calculation open to dispute.",
+    targetLocator: "§5.2, §11.3",
+    status: "fail",
+    evidenceAnchors: [
+      {
+        label: "Undefined capitalized term usage",
+        source: "ctr-002 §5.2",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-02T15:00:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Maya Gupta",
+        sourceLocator: "§5.2, p. 6",
+        supportingExcerpt:
+          "In the event Provider fails to meet the Availability SLA in any calendar month, Customer shall receive Service Level Credits calculated in accordance with Section 11.3.",
+      },
+    ],
+    recommendedAction:
+      "Add a definition of Service Level Credits specifying the credit rate, cap, and calculation base, and confirm §11.3 references that definition.",
+    checkedAt: "2026-06-02T15:00:00Z",
+    checkedBy: "Maya Gupta",
+  },
+  {
+    id: "dic-003",
+    contractId: "ctr-003",
+    checkType: "defined-term",
+    finding:
+      "Accelerated Vesting is defined in §4.1 but the term is never used elsewhere in the agreement, suggesting a deleted provision or a stale definition left from an earlier draft.",
+    targetLocator: "§4.1",
+    status: "review-required",
+    evidenceAnchors: [
+      {
+        label: "Stale defined term",
+        source: "ctr-003 §4.1",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-03T11:30:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Sarah Chen",
+        sourceLocator: "§4.1",
+        supportingExcerpt:
+          "Accelerated Vesting shall mean the immediate vesting of all unvested equity awards upon a Qualifying Termination or a Change of Control event, as such terms are defined in the Plan.",
+      },
+    ],
+    recommendedAction:
+      "Confirm with the drafter whether an acceleration provision was intentionally removed; if so, strike the unused definition from §4.1.",
+    checkedAt: "2026-06-03T11:30:00Z",
+    checkedBy: "Sarah Chen",
+  },
+  {
+    id: "dic-004",
+    contractId: "ctr-004",
+    checkType: "defined-term",
+    finding:
+      "Specifications is defined twice, in §1.1 and §9.3, with materially different wording, leaving it ambiguous which definition controls for acceptance testing and remedies.",
+    targetLocator: "§1.1 vs §9.3",
+    status: "review-required",
+    evidenceAnchors: [
+      {
+        label: "First conflicting definition",
+        source: "ctr-004 §1.1",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-04T09:10:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "§1.1",
+        supportingExcerpt:
+          "Specifications means the technical specifications, drawings, and performance criteria set forth in Exhibit A to this Agreement, as amended from time to time by written agreement.",
+      },
+      {
+        label: "Second conflicting definition",
+        source: "ctr-004 §9.3",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-04T09:10:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "§9.3",
+        supportingExcerpt:
+          "Specifications shall mean the manufacturing tolerances and quality requirements identified in Schedule 2, which shall prevail in the event of any inconsistency with Exhibit A.",
+      },
+    ],
+    recommendedAction:
+      "Consolidate the two definitions into a single §1.1 definition and delete the §9.3 restatement, or add an express precedence clause.",
+    checkedAt: "2026-06-04T09:10:00Z",
+    checkedBy: "David Park",
+  },
+  {
+    id: "dic-005",
+    contractId: "ctr-005",
+    checkType: "cross-reference",
+    finding:
+      "All internal cross-references resolve to existing sections and exhibits. §2.3 correctly points to Exhibit A, which is attached, and no reference targets a deleted or renumbered section.",
+    targetLocator: "§2.3 → Exhibit A",
+    status: "pass",
+    evidenceAnchors: [
+      {
+        label: "Resolved exhibit cross-reference",
+        source: "ctr-005 §2.3",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-05T10:45:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "§2.3",
+        supportingExcerpt:
+          "Customer shall pay the license fees for each Authorized Seat in accordance with the fee schedule set forth in Exhibit A, which is incorporated into this Agreement by reference.",
+      },
+    ],
+    recommendedAction:
+      "No action required; cross-references were verified against the executed text and all targets resolve.",
+    checkedAt: "2026-06-05T10:45:00Z",
+    checkedBy: "David Park",
+  },
+  {
+    id: "dic-006",
+    contractId: "ctr-007",
+    checkType: "defined-term",
+    finding:
+      "All capitalized defined terms are defined once in the definitions section and used at least once, with no duplicate, conflicting, or unused definitions detected.",
+    targetLocator: "§1 definitions",
+    status: "pass",
+    evidenceAnchors: [
+      {
+        label: "Consistent definitions sweep",
+        source: "ctr-007 §1",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-08T10:20:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "§1",
+        supportingExcerpt:
+          "For purposes of this Agreement, Confidential Information shall have the meaning set forth in Section 1 and shall be used consistently throughout this Agreement.",
+      },
+    ],
+    recommendedAction:
+      "No action required; defined terms were checked against the definitions section with no gaps, duplicates, or conflicts.",
+    checkedAt: "2026-06-08T10:20:00Z",
     checkedBy: "David Park",
   },
 ];
