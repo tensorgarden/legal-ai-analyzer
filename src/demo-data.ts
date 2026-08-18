@@ -10,6 +10,7 @@ import type {
   PlaybookRule,
   PlaybookCheck,
   DraftingIntegrityCheck,
+  ClauseConflictCheck,
 } from "@/types";
 
 // ─── 8 Contracts ─────────────────────────────────────────────────────────────────
@@ -1124,6 +1125,240 @@ export const draftingIntegrityChecks: DraftingIntegrityCheck[] = [
       "No action required; defined terms were checked against the definitions section with no gaps, duplicates, or conflicts.",
     checkedAt: "2026-06-08T10:20:00Z",
     checkedBy: "David Park",
+  },
+];
+
+// ─── Clause Conflict Checks ──────────────────────────────────────────────────────
+
+export const clauseConflictChecks: ClauseConflictCheck[] = [
+  {
+    id: "clc-001",
+    contractId: "ctr-004",
+    conflictType: "liability-carveout",
+    clauseIds: ["cl-014", "cl-015"],
+    finding:
+      "Section 8 (Delivery Penalties) imposes a 5%-per-day penalty for every late delivery with no grace period and no force majeure exception, while Section 12 (Force Majeure) states neither party is liable for delays caused by circumstances beyond its reasonable control. As drafted, a supplier whose deliveries run late because of a qualifying force majeure event is still exposed to daily penalties, directly contradicting the relief the force majeure clause grants.",
+    severity: "high",
+    recommendedResolution:
+      "Add a carve-out to the penalty provision excusing late deliveries during a force majeure event, and cap total penalties at 10-15% of order value.",
+    status: "open",
+    evidenceAnchors: [
+      {
+        label: "Penalty clause without force majeure exception",
+        source: "ctr-004 §8",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-04T09:30:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "Vendor Agreement §8, p. 5",
+        supportingExcerpt:
+          "Late deliveries incur a penalty of 5% of order value per day exceeding the delivery window, with no grace period or force majeure exception stated anywhere in this Section 8.",
+      },
+      {
+        label: "Conflicting force majeure relief",
+        source: "ctr-004 §12",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-04T09:30:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "Vendor Agreement §12, p. 7",
+        supportingExcerpt:
+          "Neither party shall be liable for delays caused by circumstances beyond their reasonable control, including acts of God, governmental action, or supplier failure.",
+      },
+    ],
+    resolvedBy: null,
+    resolvedAt: null,
+    detectedAt: "2026-06-04T09:30:00Z",
+    detectedBy: "David Park",
+  },
+  {
+    id: "clc-002",
+    contractId: "ctr-001",
+    conflictType: "confidentiality-survival",
+    clauseIds: ["cl-001", "cl-002"],
+    finding:
+      "Section 2 (Term and Termination) provides that the agreement remains in effect for three years, while Section 1 (Definition of Confidential Information) contains no survival language. Read together, the confidentiality obligations appear to lapse when the three-year term ends, leaving previously disclosed information unprotected unless a separate survival provision is added before execution.",
+    severity: "high",
+    recommendedResolution:
+      "Add an express survival clause keeping confidentiality obligations in force for 3-5 years after termination, mirroring the firm's standard NDA fallback position.",
+    status: "counsel-review",
+    evidenceAnchors: [
+      {
+        label: "Confidential information definition without survival",
+        source: "ctr-001 §1",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-01T10:05:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Sarah Chen",
+        sourceLocator: "NDA §1, p. 1",
+        supportingExcerpt:
+          "Confidential Information means any non-public information disclosed by either party, whether oral, written, or electronic, and this Section 1 states no period during which the receiving party's obligations continue after the term ends.",
+      },
+      {
+        label: "Three-year term without survival extension",
+        source: "ctr-001 §2",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-01T10:05:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Sarah Chen",
+        sourceLocator: "NDA §2, p. 1",
+        supportingExcerpt:
+          "This Agreement shall remain in effect for three (3) years from the Effective Date, with no stated survival of the confidentiality obligations after the three-year term.",
+      },
+    ],
+    resolvedBy: null,
+    resolvedAt: null,
+    detectedAt: "2026-06-01T10:05:00Z",
+    detectedBy: "Sarah Chen",
+  },
+  {
+    id: "clc-003",
+    contractId: "ctr-003",
+    conflictType: "termination-vesting",
+    clauseIds: ["cl-011", "cl-012"],
+    finding:
+      "Section 5 (Equity Vesting Schedule) vests options over four years with a one-year cliff subject to Board discretion, while Section 9 (Termination Provisions) permits the Company to terminate at will with two weeks notice. Neither clause states how vested and unvested options are treated on termination, so an at-will termination in year three could forfeit accrued equity value through Board discretion alone.",
+    severity: "medium",
+    recommendedResolution:
+      "Define treatment of vested and unvested options for each termination scenario and add change-of-control acceleration so termination mechanics cannot silently erase accrued value.",
+    status: "counsel-review",
+    evidenceAnchors: [
+      {
+        label: "Vesting subject to Board discretion",
+        source: "ctr-003 §5",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-03T11:45:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Sarah Chen",
+        sourceLocator: "Employment Agreement §5, p. 7",
+        supportingExcerpt:
+          "Options shall vest over 4 years with a 1-year cliff, subject to Board discretion, and this Section 5 is silent on the treatment of vested options upon termination.",
+      },
+      {
+        label: "At-will termination without vesting treatment",
+        source: "ctr-003 §9",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-03T11:45:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Sarah Chen",
+        sourceLocator: "Employment Agreement §9, p. 11",
+        supportingExcerpt:
+          "Company may terminate employment at any time, with or without cause, upon 2 weeks notice, and this Section 9 does not state whether vested options are preserved on termination.",
+      },
+    ],
+    resolvedBy: null,
+    resolvedAt: null,
+    detectedAt: "2026-06-03T11:45:00Z",
+    detectedBy: "Sarah Chen",
+  },
+  {
+    id: "clc-004",
+    contractId: "ctr-006",
+    conflictType: "governance-deadlock",
+    clauseIds: ["cl-019", "cl-021"],
+    finding:
+      "Section 3 (Governance Structure) creates a four-director board with two appointees per partner and no tie-breaking mechanism, while Section 10 (Dispute Resolution) routes all disputes through 60 days of mediation before arbitration. An even split can deadlock routine operating decisions, and the mediation-first path cannot provide the immediate resolution a deadlocked board needs to keep the joint venture operating.",
+    severity: "medium",
+    recommendedResolution:
+      "Add a rotating chair, tie-breaker, or buy-sell mechanism for board deadlocks, and exempt urgent operating deadlocks from the 60-day mediation prerequisite.",
+    status: "open",
+    evidenceAnchors: [
+      {
+        label: "Even-numbered board without tie-breaker",
+        source: "ctr-006 §3",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-06T16:40:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "Partnership Agreement §3, p. 4",
+        supportingExcerpt:
+          "The JV shall be governed by a Board of 4 directors, 2 appointed by each Partner, and this Section 3 provides no tie-breaking mechanism for an evenly divided vote.",
+      },
+      {
+        label: "Mediation-first dispute path",
+        source: "ctr-006 §10",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-06T16:40:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "David Park",
+        sourceLocator: "Partnership Agreement §10, p. 12",
+        supportingExcerpt:
+          "Any dispute shall first be submitted to mediation, and if unresolved within 60 days, to binding arbitration under AAA rules, with no exception for routine operating deadlocks.",
+      },
+    ],
+    resolvedBy: null,
+    resolvedAt: null,
+    detectedAt: "2026-06-06T16:40:00Z",
+    detectedBy: "David Park",
+  },
+  {
+    id: "clc-005",
+    contractId: "ctr-007",
+    conflictType: "return-vs-survival",
+    clauseIds: ["cl-022", "cl-023"],
+    finding:
+      "An earlier draft required return or destruction of all Confidential Information within 30 days of termination, while a later section stated confidentiality obligations survive termination for five years. The executed agreement harmonizes both clauses: reasonable-care obligations continue for five years, and the 30-day return requirement was removed because it could not be reconciled with a five-year survival duty.",
+    severity: "medium",
+    recommendedResolution:
+      "Resolved in the executed version: the five-year survival standard in Section 6 now controls, and the conflicting draft return deadline was deleted before signature.",
+    status: "resolved",
+    evidenceAnchors: [
+      {
+        label: "Executed survival standard",
+        source: "ctr-007 §6",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-09T16:40:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Sarah Chen",
+        sourceLocator: "FinServe NDA §6, p. 2",
+        supportingExcerpt:
+          "Confidentiality obligations survive termination for 5 years, and no conflicting return-or-destroy deadline appears anywhere in the executed agreement.",
+      },
+    ],
+    resolvedBy: "Sarah Chen",
+    resolvedAt: "2026-06-09T16:40:00Z",
+    detectedAt: "2026-06-07T14:05:00Z",
+    detectedBy: "Sarah Chen",
+  },
+  {
+    id: "clc-006",
+    contractId: "ctr-002",
+    conflictType: "payment-vs-termination",
+    clauseIds: ["cl-007", "cl-008"],
+    finding:
+      "Section 4 (Fees and Payment Terms) requires payment of all invoiced amounts within 15 days of receipt, while Section 7 (Termination for Convenience) allows either party to terminate on 30 days written notice. Services continue through the 30-day wind-down, but invoices issued during that period fall due 15 days after receipt, so payment can be demanded before the wind-down ends with no stated true-up or credit for services not consumed after final payment.",
+    severity: "medium",
+    recommendedResolution:
+      "Add a final-reconciliation provision: on termination, invoices for the wind-down period are due net 30 after the final service date, and any prepaid unused fees are credited within 30 days of termination.",
+    status: "open",
+    evidenceAnchors: [
+      {
+        label: "Fifteen-day payment window",
+        source: "ctr-002 §4",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-02T15:30:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Maya Gupta",
+        sourceLocator: "MSA §4, p. 6",
+        supportingExcerpt:
+          "Customer shall pay all invoiced amounts within 15 days of receipt, and this Section 4 states no payment exception for invoices issued during a termination wind-down.",
+      },
+      {
+        label: "Thirty-day termination wind-down",
+        source: "ctr-002 §7",
+        referenceType: "contract-section",
+        verifiedAt: "2026-06-02T15:30:00Z",
+        verificationMethod: "contract-text-match",
+        verifiedBy: "Maya Gupta",
+        sourceLocator: "MSA §7, p. 9",
+        supportingExcerpt:
+          "Either party may terminate this Agreement with 30 days written notice, and this Section 7 states no reconciliation or credit mechanism for services not consumed during the notice period.",
+      },
+    ],
+    resolvedBy: null,
+    resolvedAt: null,
+    detectedAt: "2026-06-02T15:30:00Z",
+    detectedBy: "Maya Gupta",
   },
 ];
 

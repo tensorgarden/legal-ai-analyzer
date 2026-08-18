@@ -262,6 +262,32 @@ export interface DraftingIntegrityCheck {
   checkedBy: string;
 }
 
+export type ClauseConflictType =
+  | "liability-carveout"
+  | "confidentiality-survival"
+  | "termination-vesting"
+  | "governance-deadlock"
+  | "return-vs-survival"
+  | "payment-vs-termination";
+
+export type ClauseConflictStatus = "open" | "counsel-review" | "resolved";
+
+export interface ClauseConflictCheck {
+  id: string;
+  contractId: string;
+  conflictType: ClauseConflictType;
+  clauseIds: [string, string];
+  finding: string;
+  severity: RiskLevel;
+  recommendedResolution: string;
+  status: ClauseConflictStatus;
+  evidenceAnchors: EvidenceAnchor[];
+  resolvedBy: string | null;
+  resolvedAt: string | null;
+  detectedAt: string;
+  detectedBy: string;
+}
+
 export interface ReviewTimelineEvent {
   id: string;
   contractId: string;

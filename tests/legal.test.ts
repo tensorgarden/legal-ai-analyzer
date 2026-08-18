@@ -12,8 +12,16 @@ import {
   playbookRules,
   playbookChecks,
   draftingIntegrityChecks,
+  clauseConflictChecks,
 } from "@/demo-data";
-import type { Contract, Clause, RiskAssessment, ComplianceCheck, ReviewTimelineEvent } from "@/types";
+import type {
+  Contract,
+  Clause,
+  RiskAssessment,
+  ComplianceCheck,
+  ReviewTimelineEvent,
+  ClauseConflictCheck,
+} from "@/types";
 
 describe("contracts data", () => {
   it("has exactly 8 contracts", () => {
@@ -835,6 +843,95 @@ describe("drafting integrity checks", () => {
     expect(passing.length).toBeGreaterThan(0);
     passing.forEach((check) => {
       expect(check.recommendedAction).toMatch(/no action|none required|verified|confirmed/i);
+    });
+  });
+});
+
+describe("clause conflict checks", () => {
+  const knownClauseIds = new Map(clauses.map((clause) => [clause.id, clause]));
+
+  it("every conflict pairs two distinct known clauses from the same contract", () => {
+    expect(clauseConflictChecks.length).toBeGreaterThanOrEqual(6);
+
+    clauseConflictChecks.forEach((check) => {
+      const first = knownClauseIds.get(check.clauseIds[0]);
+      const second = knownClauseIds.get(check.clauseIds[1]);
+
+      expect(check.clauseIds[0]).not.toBe(check.clauseIds[1]);
+      expect(first).toBeDefined();
+      expect(second).toBeDefined();
+      expect(first?.contractId).toBe(check.contractId);
+      expect(second?.contractId).toBe(check.contractId);
+    });
+  });
+
+  it("every conflict carries a substantive finding, typed severity, and a human detector", () => {
+    const validTypes = [
+      "liability-carveout",
+      "confidentiality-survival",
+      "termination-vesting",
+      "governance-deadlock",
+      "return-vs-survival",
+      "payment-vs-termination",
+    ];
+
+    clauseConflictChecks.forEach((check: ClauseConflictCheck) => {
+      expect(validTypes).toContain(check.conflictType);
+      expect(["high", "medium", "low"]).toContain(check.severity);
+      expect(["open", "counsel-review", "resolved"]).toContain(check.status);
+      expect(check.finding.trim().length).toBeGreaterThan(120);
+      expect(check.recommendedResolution.trim().length).toBeGreaterThan(60);
+      expect(Date.parse(check.detectedAt)).not.toBeNaN();
+      expect(check.detectedBy.trim().length).toBeGreaterThan(2);
+      expect(check.detectedBy).not.toMatch(/legal ai|model|automation/i);
+    });
+  });
+
+  it("only resolved conflicts carry resolution metadata, and resolution names a human", () => {
+    const resolved = clauseConflictChecks.filter((check) => check.status === "resolved");
+    const unresolved = clauseConflictChecks.filter((check) => check.status !== "resolved");
+
+    expect(resolved.length).toBeGreaterThan(0);
+    expect(unresolved.length).toBeGreaterThan(0);
+
+    resolved.forEach((check) => {
+      expect(check.resolvedBy?.trim().length ?? 0).toBeGreaterThan(2);
+      expect(check.resolvedBy).not.toMatch(/legal ai|model|automation/i);
+      expect(check.resolvedAt).not.toBeNull();
+      expect(Date.parse(check.resolvedAt ?? "")).not.toBeNaN();
+      expect(Date.parse(check.resolvedAt ?? "")).toBeGreaterThanOrEqual(Date.parse(check.detectedAt));
+    });
+
+    unresolved.forEach((check) => {
+      expect(check.resolvedBy).toBeNull();
+      expect(check.resolvedAt).toBeNull();
+    });
+  });
+
+  it("anchors every unresolved conflict to verified contract text for both clauses", () => {
+    const unresolved = clauseConflictChecks.filter((check) => check.status !== "resolved");
+
+    expect(unresolved.length).toBeGreaterThan(0);
+    unresolved.forEach((check) => {
+      expect(check.evidenceAnchors.length).toBeGreaterThanOrEqual(2);
+      check.evidenceAnchors.forEach((anchor) => {
+        expect(anchor.referenceType).toBe("contract-section");
+        expect(anchor.verificationMethod).toBe("contract-text-match");
+        expect((anchor.sourceLocator ?? "").trim().length).toBeGreaterThan(0);
+        expect((anchor.supportingExcerpt ?? "").trim().length).toBeGreaterThan(60);
+        expect((anchor.verifiedBy ?? "").trim().length).toBeGreaterThan(2);
+        expect(anchor.verifiedBy).not.toMatch(/legal ai|model|automation/i);
+        expect(Date.parse(anchor.verifiedAt)).not.toBeNaN();
+      });
+    });
+  });
+
+  it("never marks a high-severity conflict resolved without a human decision record", () => {
+    const highSeverity = clauseConflictChecks.filter((check) => check.severity === "high");
+
+    expect(highSeverity.length).toBeGreaterThan(0);
+    highSeverity.forEach((check) => {
+      expect(check.status).not.toBe("resolved");
     });
   });
 });
