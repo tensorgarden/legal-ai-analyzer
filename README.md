@@ -17,6 +17,9 @@ Every clause gets a 0-100 risk score with supporting analysis. High-risk provisi
 ### Compliance Checking
 Automated checks against GDPR, CCPA, DTSA, UCC, FTC rules, and state employment laws. See which contracts pass, which fail, and which need manual review.
 
+### Filing and Correction Readiness
+Court-specific AI disclosure checks sit beside citation and independent-judgment gates. The demo also records the post-filing candor path: an unresolved citation or quotation error stays blocked until counsel alerts the court and opposing counsel, discloses the source, and records the correction.
+
 ### Review Queue
 Dashboard view of every contract in flight. Status dots, risk bars, and clause counts give your team instant visibility into what needs action.
 
@@ -53,9 +56,9 @@ src/
   components/
     ui.tsx          # Badge, Card, ProgressBar, StatusDot, StatCard
   types.ts          # Contract, Clause, RiskAssessment, ComplianceCheck, etc.
-  demo-data.ts      # 8 contracts, 25 clauses, compliance data, timeline
+  demo-data.ts      # 8 contracts, 25 clauses, readiness data, timeline
 tests/
-  legal.test.ts     # 10 vitest tests
+  legal.test.ts     # data, citation, and release-gate invariants
 ```
 
 ## Demo Data
@@ -65,6 +68,7 @@ The dashboard ships with realistic demo data:
 - **8 contracts**: NDAs, SaaS, employment, vendor, partnership, licensing agreements
 - **25 extracted clauses** with risk scores, issues, and recommendations
 - **10 compliance checks** against GDPR, CCPA, FTC, DTSA, UCC, and state employment laws
+- **4 court-filing reviews** with court-specific disclosure and post-filing candor states
 - **21 timeline events** showing a full review workflow
 
 ## Screenshots

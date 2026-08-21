@@ -8,6 +8,7 @@ import {
   complianceChecks,
   privilegeHandlingReviews,
   filingReadinessReviews,
+  canReleaseFiling,
   workProductReadinessReviews,
   reviewTimeline,
 } from "@/demo-data";
@@ -305,6 +306,7 @@ export default function DashboardPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {filingReadinessReviews.map((review) => {
             const contract = contracts.find((item) => item.id === review.contractId);
+            const displayedFilingStatus = canReleaseFiling(review) ? review.status : "counsel-review";
             return (
               <Card key={review.id}>
                 <div className="flex items-start justify-between gap-3">
@@ -315,7 +317,7 @@ export default function DashboardPage() {
                     </p>
                     <p className="mt-1 text-xs text-gray-500">Target court: {review.targetCourt}</p>
                   </div>
-                  <Badge variant={filingReadinessVariant(review.status)}>{review.status}</Badge>
+                  <Badge variant={filingReadinessVariant(displayedFilingStatus)}>{displayedFilingStatus}</Badge>
                 </div>
                 <p className="mt-3 text-sm text-gray-600">{review.reviewNote}</p>
                 <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-500 sm:grid-cols-4">
@@ -329,6 +331,28 @@ export default function DashboardPage() {
                         ? "No AI certificate required"
                         : "Court AI rule check open"}
                   </span>
+                </div>
+                <div className="mt-3 rounded-lg border border-gray-100 bg-gray-50/60 p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Post-filing candor</span>
+                    <Badge
+                      variant={
+                        review.filingCandorStatus === "correction-required"
+                          ? "high"
+                          : review.filingCandorStatus === "correction-disclosed"
+                            ? "success"
+                            : "neutral"
+                      }
+                    >
+                      {review.filingCandorStatus.replaceAll("-", " ")}
+                    </Badge>
+                    {review.filingErrorSource && (
+                      <span className="text-xs text-gray-500">
+                        Source: {review.filingErrorSource.replaceAll("-", " ")}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-2 text-xs text-gray-600">{review.filingCorrectionNote}</p>
                 </div>
               </Card>
             );

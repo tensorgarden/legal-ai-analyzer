@@ -143,6 +143,13 @@ export type CourtAIDisclosureStatus =
   | "not-required-confirmed"
   | "pending-local-rule-check";
 
+export type FilingCandorStatus =
+  | "not-triggered"
+  | "correction-required"
+  | "correction-disclosed";
+
+export type FilingErrorSource = "ai-generated" | "human-draft" | "unknown";
+
 export interface FilingReadinessReview {
   id: string;
   contractId: string;
@@ -158,6 +165,12 @@ export interface FilingReadinessReview {
   reviewedBy: string | null;
   reviewedAt: string | null;
   reviewNote: string;
+  filingCandorStatus: FilingCandorStatus;
+  filingErrorDiscoveredAt: string | null;
+  filingErrorSource: FilingErrorSource | null;
+  courtAndOpposingCounselAlertedAt: string | null;
+  filingErrorSourceDisclosed: boolean;
+  filingCorrectionNote: string;
 }
 
 export type LitigationAnticipationStatus =

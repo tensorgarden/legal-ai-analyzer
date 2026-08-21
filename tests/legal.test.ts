@@ -13,6 +13,7 @@ import {
   playbookChecks,
   draftingIntegrityChecks,
   clauseConflictChecks,
+  canReleaseFiling,
 } from "@/demo-data";
 import type {
   Contract,
@@ -412,6 +413,75 @@ describe("external-use filing readiness", () => {
       expect(review.status).toBe("blocked");
       expect(review.reviewNote).toMatch(/blocked|must replace|re-evaluate/i);
     });
+  });
+});
+
+describe("filing candor and correction readiness", () => {
+  const validCandorStatuses = ["not-triggered", "correction-required", "correction-disclosed"];
+
+  it("records an explicit post-filing response path for every court filing", () => {
+    const courtFilings = filingReadinessReviews.filter((review) => review.intendedUse === "court-filing");
+    const statuses = new Set(courtFilings.map((review) => review.filingCandorStatus));
+
+    expect(courtFilings.length).toBeGreaterThanOrEqual(3);
+    expect([...statuses]).toEqual(
+      expect.arrayContaining(["not-triggered", "correction-required", "correction-disclosed"]),
+    );
+    courtFilings.forEach((review) => {
+      expect(validCandorStatuses).toContain(review.filingCandorStatus);
+      expect(review.filingCorrectionNote.trim().length).toBeGreaterThan(100);
+
+      if (review.filingCandorStatus === "not-triggered") {
+        expect(review.filingErrorDiscoveredAt).toBeNull();
+        expect(review.filingErrorSource).toBeNull();
+        expect(review.courtAndOpposingCounselAlertedAt).toBeNull();
+        expect(review.filingErrorSourceDisclosed).toBe(false);
+      }
+    });
+  });
+
+  it("holds unresolved filing errors until the source and correction are disclosed", () => {
+    const pendingCorrections = filingReadinessReviews.filter(
+      (review) => review.filingCandorStatus === "correction-required",
+    );
+    const disclosedCorrections = filingReadinessReviews.filter(
+      (review) => review.filingCandorStatus === "correction-disclosed",
+    );
+
+    expect(pendingCorrections.length).toBeGreaterThan(0);
+    expect(disclosedCorrections.length).toBeGreaterThan(0);
+
+    pendingCorrections.forEach((review) => {
+      expect(review.status).not.toBe("ready");
+      expect(Date.parse(review.filingErrorDiscoveredAt ?? "")).not.toBeNaN();
+      expect(["ai-generated", "human-draft", "unknown"]).toContain(review.filingErrorSource);
+      expect(review.courtAndOpposingCounselAlertedAt).toBeNull();
+      expect(review.filingErrorSourceDisclosed).toBe(false);
+      expect(review.filingCorrectionNote).toMatch(/court|opposing counsel|source|correct/i);
+      expect(canReleaseFiling(review)).toBe(false);
+    });
+
+    disclosedCorrections.forEach((review) => {
+      expect(review.status).toBe("ready");
+      expect(Date.parse(review.filingErrorDiscoveredAt ?? "")).not.toBeNaN();
+      expect(Date.parse(review.courtAndOpposingCounselAlertedAt ?? "")).not.toBeNaN();
+      expect(review.filingErrorSource).toBe("ai-generated");
+      expect(review.filingErrorSourceDisclosed).toBe(true);
+      expect(review.filingCorrectionNote).toMatch(/alerted.*court.*opposing counsel|opposing counsel.*alerted/i);
+      expect(canReleaseFiling(review)).toBe(true);
+    });
+  });
+
+  it("keeps an open candor status from bypassing the release gate", () => {
+    const readyBaseline = filingReadinessReviews.find(
+      (review) => review.status === "ready" && review.filingCandorStatus === "not-triggered",
+    );
+    const adversarial = readyBaseline
+      ? { ...readyBaseline, filingCandorStatus: "correction-required" as const }
+      : undefined;
+
+    expect(adversarial).toBeDefined();
+    expect(canReleaseFiling(adversarial!)).toBe(false);
   });
 });
 
